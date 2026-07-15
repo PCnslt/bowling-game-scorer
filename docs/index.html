@@ -59,8 +59,8 @@
   }
 
   /* top bar */
-  .topbar { width: 100%; display: flex; justify-content: space-between; gap: 10px; }
-  .brand, .ghlink {
+  .topbar { width: 100%; display: flex; justify-content: center; gap: 10px; }
+  .brand {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 12.5px; font-weight: 700;
     background: var(--panel); border: 1px solid var(--panel-border);
@@ -68,8 +68,14 @@
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   }
   .brand small { color: var(--ink-dim); font-weight: 500; }
-  .ghlink { color: var(--accent); text-decoration: none; }
-  .ghlink:hover { border-color: var(--accent); }
+
+  /* colorful gradient borders on the main panels */
+  .scoreboard, .padpanel, .testspanel {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--panel), var(--panel)) padding-box,
+      linear-gradient(120deg, rgba(45, 212, 191, 0.55), rgba(245, 158, 11, 0.40), rgba(244, 114, 182, 0.45)) border-box;
+  }
 
   /* scoreboard marquee */
   .scoreboard { padding: 16px 16px 12px; max-width: 100%; }
@@ -81,7 +87,14 @@
     background: rgba(255, 255, 255, 0.03); padding: 4px 3px 6px;
     text-align: center; transition: border-color 0.25s, box-shadow 0.25s;
   }
-  .frame.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(45, 212, 191, 0.2); }
+  .frame.active { border-color: var(--accent); animation: framepulse 1.6s ease-in-out infinite; }
+  @keyframes framepulse {
+    0%, 100% { box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(45, 212, 191, 0.18); }
+    50% { box-shadow: 0 0 0 1.5px var(--accent), 0 0 26px rgba(45, 212, 191, 0.45); }
+  }
+  @keyframes cumpop { 0% { transform: scale(1.7); filter: brightness(2.2); } 100% { transform: scale(1); } }
+  .frame .cum.pop { animation: cumpop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .total .value.pop { animation: cumpop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .frame .num { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--ink-dim); margin-bottom: 4px; }
   .frame.active .num { color: var(--accent); }
   .rolls { display: flex; gap: 3px; justify-content: center; margin-bottom: 4px; }
@@ -103,18 +116,6 @@
     text-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
   }
 
-  /* how-to steps */
-  .steps { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 13px 14px 10px; }
-  .step {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 600;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--panel-border);
-    border-radius: 999px; padding: 6px 13px;
-  }
-  .step .n { font-size: 15px; }
-  .step b { color: var(--accent-2); font-family: "JetBrains Mono", monospace; }
-
   .spacer { flex: 1 1 auto; min-height: 34vh; pointer-events: none; }
 
   .lanetag {
@@ -126,7 +127,15 @@
 
   /* pad */
   .padpanel { padding: 18px 18px 14px; text-align: center; max-width: 640px; }
-  #status { font-size: 14.5px; font-weight: 600; margin-bottom: 12px; min-height: 20px; }
+  #status {
+    font-size: 20px; font-weight: 800; margin-bottom: 14px; min-height: 27px; letter-spacing: -0.01em;
+    background: linear-gradient(92deg, #2dd4bf, #7dd3fc, #f59e0b, #f472b6, #2dd4bf);
+    background-size: 320%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: statusflow 6s linear infinite, statusbob 2.6s ease-in-out infinite;
+  }
+  @keyframes statusflow { to { background-position: 320% center; } }
+  @keyframes statusbob { 50% { transform: translateY(-2px) scale(1.015); } }
   #status.perfect {
     font-weight: 800; font-size: 18px;
     background: linear-gradient(92deg, var(--accent-2), #fde68a, var(--accent-2));
@@ -134,8 +143,8 @@
     animation: shimmer 2s linear infinite;
   }
   @keyframes shimmer { to { background-position: 200% center; } }
-  #status.error { color: var(--danger); }
-  #status.done { color: var(--ok); }
+  #status.error { background: none; color: var(--danger); animation: none; }
+  #status.done { background: none; color: var(--ok); animation: none; }
   .pad { display: flex; flex-direction: column; gap: 8px; align-items: center; }
   .padrow { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
   .key {
@@ -158,28 +167,18 @@
     font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
     cursor: pointer; transition: all 0.15s; font-family: "Inter", sans-serif;
   }
-  .chip:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+  .chip:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.3); }
   .chip:disabled { opacity: 0.3; cursor: not-allowed; }
+  .chip-example { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.45); }
+  .chip-perfect { color: #f59e0b; border-color: rgba(245, 158, 11, 0.45); }
+  .chip-spares { color: #f472b6; border-color: rgba(244, 114, 182, 0.45); }
 
-  /* tests */
-  .testsfab {
-    position: fixed; right: 16px; bottom: 16px; z-index: 6;
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--panel); border: 1px solid var(--panel-border);
-    color: var(--ink); font-family: "Inter", sans-serif;
-    font-size: 13px; font-weight: 700; padding: 11px 17px; border-radius: 999px;
-    cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    transition: all 0.15s;
-  }
-  .testsfab:hover { border-color: var(--accent); color: var(--accent); }
+  /* tests — a normal panel at the very bottom of the page */
   .testspanel {
-    display: none;
-    position: fixed; right: 16px; bottom: 68px; z-index: 6;
-    width: min(560px, calc(100vw - 32px));
-    max-height: min(66vh, 560px); overflow-y: auto;
+    width: min(760px, 100%);
     padding: 20px 18px 16px;
+    margin-top: 4px;
   }
-  .testspanel.open { display: block; }
   .tests-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .tests-head h2 { font-size: 15.5px; font-weight: 700; }
   .tests-head p { color: var(--ink-dim); font-size: 12.5px; margin-top: 2px; }
@@ -233,8 +232,6 @@
     .brand small { display: none; }
     .total .value { font-size: 30px; }
     .lanetag { display: none; }
-    .hud { padding-bottom: 66px; }           /* keep the pad clear of the Tests button */
-    .testspanel { bottom: 62px; }
   }
 </style>
 </head>
@@ -247,7 +244,6 @@
 
   <div class="topbar">
     <span class="brand">🎳 Bowling Scorer <small>· real Python in your browser</small></span>
-    <a class="ghlink" href="https://github.com/PCnslt/bowling-game-scorer" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 
   <section class="panel scoreboard">
@@ -259,13 +255,6 @@
         <div class="value" id="totalval">0</div>
       </div>
     </div>
-  </section>
-
-  <section class="panel steps">
-    <span class="tag">HOW TO PLAY</span>
-    <span class="step"><span class="n">1️⃣</span> Tap a number to bowl</span>
-    <span class="step"><span class="n">2️⃣</span> <b>X</b>&nbsp;= all pins&nbsp;·&nbsp;<b>/</b>&nbsp;= the rest</span>
-    <span class="step"><span class="n">3️⃣</span> Watch your score grow!</span>
   </section>
 
   <div class="spacer"></div>
@@ -284,29 +273,28 @@
     </div>
     <div class="chips">
       <span class="lbl">Watch a famous game:</span>
-      <button class="chip" data-game="example">Example · 149</button>
-      <button class="chip" data-game="perfect">Perfect · 300</button>
-      <button class="chip" data-game="spares">All spares · 150</button>
+      <button class="chip chip-example" data-game="example">Example · 149</button>
+      <button class="chip chip-perfect" data-game="perfect">Perfect · 300</button>
+      <button class="chip chip-spares" data-game="spares">All spares · 150</button>
     </div>
   </section>
 
-</div>
+  <section class="panel testspanel" id="testspanel">
+    <span class="tag">TESTS</span>
+    <div class="tests-head">
+      <div>
+        <h2>Run the real pytest suite</h2>
+        <p><code>test_bowling.py</code> vs <code>bowling.py</code> — right here in your browser.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="badge" id="testbadge"></span>
+        <button class="runbtn" id="runtests">▶ Run pytest</button>
+      </div>
+    </div>
+    <div id="term"></div>
+  </section>
 
-<button class="testsfab" id="testsfab">🧪 Tests</button>
-<section class="panel testspanel" id="testspanel">
-  <span class="tag">TESTS</span>
-  <div class="tests-head">
-    <div>
-      <h2>Run the real pytest suite</h2>
-      <p><code>test_bowling.py</code> vs <code>bowling.py</code> — right here in your browser.</p>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="badge" id="testbadge"></span>
-      <button class="runbtn" id="runtests">▶ Run pytest</button>
-    </div>
-  </div>
-  <div id="term"></div>
-</section>
+</div>
 
 <div id="loader"><span class="dot"></span> Loading the Python runtime…</div>
 
@@ -387,6 +375,15 @@ const lane = {
   shake: 0, busy: false, t: 0, stormUntil: 0,
 };
 
+/* ambient neon specks drifting up the room (positions as viewport fractions) */
+const AMBIENT = Array.from({ length: 34 }, (_, i) => ({
+  fx: Math.random(), fy: Math.random(),
+  speed: 0.008 + Math.random() * 0.02,
+  size: 1.5 + Math.random() * 2.5,
+  phase: Math.random() * 6.28,
+  color: CONF_COLORS[i % CONF_COLORS.length],
+}));
+
 const geom = {};
 function layout() {
   const W = window.innerWidth, H = window.innerHeight;
@@ -399,9 +396,9 @@ function layout() {
 
   const base = Math.max(42, Math.min(92, H * 0.085));
   geom.base = base;
-  /* the pin deck must sit below the floating scoreboard + how-to panels */
-  const steps = document.querySelector(".steps");
-  const panelsBottom = steps ? steps.getBoundingClientRect().bottom : H * 0.2;
+  /* the pin deck must sit below the floating scoreboard */
+  const board = document.querySelector(".scoreboard");
+  const panelsBottom = board ? board.getBoundingClientRect().bottom : H * 0.2;
   const headY = Math.min(H * 0.58, Math.max(H * 0.30, panelsBottom + base * 2.9));
   const offs = [[0], [-0.5, 0.5], [-1, 0, 1], [-1.5, -0.5, 0.5, 1.5]];
   const pos = [];
@@ -618,9 +615,10 @@ function drawPin(x, yCenter, s, rot, alpha, glow) {
 function drawBall(b) {
   const r = geom.ballR;
   b.trail.forEach(([tx, ty], k) => {
-    lctx.globalAlpha = (k / b.trail.length) * 0.3;
+    lctx.globalAlpha = (k / b.trail.length) * 0.34;
     lctx.beginPath(); lctx.arc(tx, ty, r * 0.9 * (k / b.trail.length), 0, Math.PI * 2);
-    lctx.fillStyle = "#2dd4bf"; lctx.fill();
+    lctx.fillStyle = `hsl(${(168 + k * 16 + lane.t * 70) % 360} 85% 64%)`;  // rainbow comet
+    lctx.fill();
   });
   lctx.globalAlpha = 1;
   /* glow on the boards under the ball */
@@ -672,6 +670,18 @@ function laneDraw() {
   lctx.fillStyle = pit;
   lctx.fillRect(0, 0, W, H * 0.6);
 
+  /* ambient neon specks drifting through the room */
+  for (const sp of AMBIENT) {
+    sp.fy -= sp.speed * 0.016;
+    if (sp.fy < -0.02) { sp.fy = 1.02; sp.fx = Math.random(); }
+    lctx.globalAlpha = 0.16 + 0.14 * Math.sin(lane.t * 1.8 + sp.phase);
+    lctx.fillStyle = sp.color;
+    lctx.beginPath();
+    lctx.arc(sp.fx * W, sp.fy * H, sp.size, 0, Math.PI * 2);
+    lctx.fill();
+  }
+  lctx.globalAlpha = 1;
+
   /* gutters */
   lctx.fillStyle = "#03040a";
   for (const side of [-1, 1]) {
@@ -718,16 +728,17 @@ function laneDraw() {
   lctx.fillRect(CX - halfTop * 1.2, deckTopY, halfTop * 2.4, H - deckTopY);
   lctx.restore();
 
-  /* aiming arrows + dots */
-  lctx.fillStyle = "rgba(45, 212, 191, 0.28)";
-  for (const [ox, oy] of [[0, 0], [-0.3, 0.05], [0.3, 0.05], [-0.6, 0.10], [0.6, 0.10]]) {
+  /* aiming arrows (pulsing) + dots */
+  const ARROWS = [[0, 0], [-0.3, 0.05], [0.3, 0.05], [-0.6, 0.10], [0.6, 0.10]];
+  ARROWS.forEach(([ox, oy], i) => {
     const y = geom.arrowsY + oy * H, hw = laneHalf(y);
     const x = CX + ox * hw;
     const a = base * 0.11;
+    lctx.fillStyle = `rgba(45, 212, 191, ${0.20 + 0.14 * Math.sin(lane.t * 2.2 + i * 1.3)})`;
     lctx.beginPath();
     lctx.moveTo(x, y - a * 1.6); lctx.lineTo(x - a, y + a); lctx.lineTo(x + a, y + a);
     lctx.closePath(); lctx.fill();
-  }
+  });
   lctx.fillStyle = "rgba(45, 212, 191, 0.22)";
   for (const ox of [-0.45, -0.225, 0, 0.225, 0.45]) {
     const y = geom.dotsY, hw = laneHalf(y);
@@ -856,6 +867,8 @@ function rollBox(sym) {
   return `<div class="rollbox${mark ? " mark" : ""}">${sym ? sym.toUpperCase() : ""}</div>`;
 }
 
+let prevScores = Array(10).fill(null);
+
 function render() {
   const a = analyze(state.rolls);
   const scores = state.ready ? pyPartialScores(state.rolls) : Array(10).fill(null);
@@ -865,12 +878,14 @@ function render() {
     const boxes = Array.from({ length: n }, (_, r) => rollBox(fr[r]));
     const active = !a.done && f === a.frameIdx;
     const cum = scores[f];
+    const pop = cum !== null && prevScores[f] !== cum ? " pop" : "";
     return `<div class="frame${active ? " active" : ""}">
       <div class="num">${f + 1}</div>
       <div class="rolls">${boxes.join("")}</div>
-      <div class="cum${cum === null ? " pending" : ""}">${cum === null ? (fr.length ? "…" : "") : cum}</div>
+      <div class="cum${cum === null ? " pending" : ""}${pop}">${cum === null ? (fr.length ? "…" : "") : cum}</div>
     </div>`;
   }).join("");
+  prevScores = scores.slice();
 
   /* keep the glowing frame centered when the scorecard scrolls (small screens) */
   const act = scorecardEl.querySelector(".frame.active");
@@ -881,7 +896,13 @@ function render() {
   }
 
   const lastScore = [...scores].reverse().find(s => s !== null);
-  totalEl.textContent = lastScore ?? 0;
+  const newTotal = String(lastScore ?? 0);
+  if (totalEl.textContent !== newTotal) {
+    totalEl.textContent = newTotal;
+    totalEl.classList.remove("pop");
+    void totalEl.offsetWidth;              // restart the pop animation
+    totalEl.classList.add("pop");
+  }
 
   const lock = !state.ready || lane.busy;
   document.querySelectorAll("[data-digit]").forEach(btn => {
@@ -979,7 +1000,6 @@ document.querySelectorAll(".chip").forEach(c =>
 
 document.addEventListener("keydown", e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;           // don't hijack browser shortcuts
-  if (testsPanel.classList.contains("open")) return;        // no accidental rolls while reading tests
   if (e.key >= "0" && e.key <= "9") addRoll(e.key);
   else if (e.key === "x" || e.key === "X") addRoll("X");
   else if (e.key === "/") { e.preventDefault(); addRoll("/"); }
@@ -990,10 +1010,6 @@ document.addEventListener("keydown", e => {
 const termEl = document.getElementById("term");
 const badgeEl = document.getElementById("testbadge");
 const runBtn = document.getElementById("runtests");
-const testsPanel = document.getElementById("testspanel");
-
-document.getElementById("testsfab").addEventListener("click", () =>
-  testsPanel.classList.toggle("open"));
 
 runBtn.addEventListener("click", async () => {
   if (!state.ready) return;
