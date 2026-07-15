@@ -36,7 +36,7 @@
   .wrap { max-width: 1040px; margin: 0 auto; }
 
   /* ---------- header ---------- */
-  header { text-align: center; margin-bottom: 34px; }
+  header { text-align: center; margin-bottom: 28px; }
   .kicker {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
@@ -52,7 +52,7 @@
     margin-bottom: 12px;
   }
   header p { color: var(--ink-dim); font-size: 15.5px; max-width: 560px; margin: 0 auto; line-height: 1.6; }
-  header p code {
+  header p code, .howto code {
     font-family: "JetBrains Mono", monospace; font-size: 13px;
     background: var(--panel); border: 1px solid var(--panel-border);
     padding: 1px 7px; border-radius: 6px; color: var(--accent);
@@ -63,7 +63,7 @@
     display: flex; align-items: center; justify-content: center; gap: 12px;
     color: var(--ink-dim); font-size: 14px; padding: 14px;
     border: 1px dashed var(--panel-border); border-radius: var(--radius);
-    margin-bottom: 26px; transition: opacity 0.4s;
+    margin-bottom: 22px; transition: opacity 0.4s;
   }
   #loader .dot {
     width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
@@ -71,12 +71,39 @@
   }
   @keyframes pulse { 50% { opacity: 0.2; transform: scale(0.7); } }
 
-  /* ---------- scorecard ---------- */
+  /* ---------- how to use ---------- */
   .card {
     background: var(--panel); border: 1px solid var(--panel-border);
     border-radius: var(--radius); backdrop-filter: blur(12px);
     padding: 22px; margin-bottom: 22px;
   }
+  details.howto { padding: 0; overflow: hidden; }
+  details.howto summary {
+    list-style: none; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 22px; font-weight: 700; font-size: 15px;
+  }
+  details.howto summary::-webkit-details-marker { display: none; }
+  details.howto summary .chev { margin-left: auto; color: var(--ink-dim); transition: transform 0.25s; font-size: 13px; }
+  details.howto[open] summary .chev { transform: rotate(180deg); }
+  details.howto summary:hover { background: rgba(255, 255, 255, 0.03); }
+  .howto-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px; padding: 4px 22px 22px;
+  }
+  .howto-item {
+    border: 1px solid var(--panel-border); border-radius: 12px;
+    background: rgba(0, 0, 0, 0.18); padding: 14px 16px;
+    font-size: 13.5px; line-height: 1.65; color: var(--ink-dim);
+  }
+  .howto-item b { color: var(--ink); display: block; margin-bottom: 5px; font-size: 14px; }
+  .howto-item kbd, .hint kbd {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    border: 1px solid var(--panel-border); border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; background: rgba(0, 0, 0, 0.3); color: var(--ink);
+  }
+
+  /* ---------- scorecard ---------- */
   .scorecard-scroll { overflow-x: auto; padding-bottom: 4px; }
   .scorecard { display: grid; grid-template-columns: repeat(9, 1fr) 1.45fr; gap: 8px; min-width: 720px; }
   .frame {
@@ -118,20 +145,13 @@
   .controls { display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: center; }
   @media (max-width: 720px) { .controls { grid-template-columns: 1fr; justify-items: center; } }
 
-  .pindeck { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 10px 18px; }
-  .pinrow { display: flex; gap: 12px; }
-  .pin {
-    width: 15px; height: 15px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffffff, #b9c2d4);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 -2px 3px rgba(0, 0, 0, 0.2);
-    position: relative; transition: opacity 0.3s, transform 0.3s;
+  .lanewrap { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  #lane {
+    border-radius: 14px; border: 1px solid var(--panel-border);
+    background: #06080f;
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.06), inset 0 0 30px rgba(0, 0, 0, 0.6);
   }
-  .pin::after {
-    content: ""; position: absolute; inset: 4px 3px auto 3px; height: 3px;
-    border-radius: 3px; background: var(--danger); opacity: 0.85;
-  }
-  .pin.down { opacity: 0.13; transform: scale(0.75); }
-  .pindeck .caption { font-size: 11.5px; color: var(--ink-dim); margin-top: 6px; letter-spacing: 0.05em; }
+  .lanewrap .caption { font-size: 11.5px; color: var(--ink-dim); letter-spacing: 0.05em; }
 
   .pad { display: flex; flex-direction: column; gap: 10px; }
   .padrow { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -157,13 +177,7 @@
   }
   .chip:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
   .chip:disabled { opacity: 0.3; cursor: not-allowed; }
-
   .hint { font-size: 12.5px; color: var(--ink-dim); margin-top: 12px; }
-  .hint kbd {
-    font-family: "JetBrains Mono", monospace; font-size: 11px;
-    border: 1px solid var(--panel-border); border-bottom-width: 2px;
-    border-radius: 5px; padding: 1px 6px; background: rgba(0, 0, 0, 0.3);
-  }
 
   /* ---------- tests ---------- */
   .tests-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
@@ -211,6 +225,39 @@
 
   <div id="loader"><span class="dot"></span> Loading the Python runtime…</div>
 
+  <!-- how to use -->
+  <details class="card howto" id="howto">
+    <summary>📖 How to use this page <span class="chev">▼</span></summary>
+    <div class="howto-grid">
+      <div class="howto-item"><b>🎳 Bowl with the number pad</b>
+        Tap <kbd>0</kbd>–<kbd>9</kbd> for how many pins you knock down.
+        <kbd>X</kbd> is a strike (all 10 on the first ball); <kbd>/</kbd> is a spare
+        (clearing the rest on the second ball). Impossible buttons disable themselves —
+        after an 8, only <kbd>0</kbd>, <kbd>1</kbd> and <kbd>/</kbd> stay lit.</div>
+      <div class="howto-item"><b>🕹️ Watch the lane</b>
+        Every roll sends the ball down the lane: pins scatter, strikes shake the screen,
+        and rolling a 0 earns you a proper <em>GUTTER</em>. A fresh rack drops in
+        whenever a new frame (or bonus ball) needs one.</div>
+      <div class="howto-item"><b>🧮 Read the scorecard</b>
+        Each frame shows its rolls on top and the cumulative score below.
+        “…” means the frame is waiting on bonus rolls (a strike needs the next two,
+        a spare the next one). The glowing frame is the one you're bowling.</div>
+      <div class="howto-item"><b>⌨️ Keyboard shortcuts</b>
+        <kbd>0</kbd>–<kbd>9</kbd> roll, <kbd>X</kbd> strike, <kbd>/</kbd> spare,
+        <kbd>⌫ Backspace</kbd> undo. On-screen <em>Undo</em> takes back the last roll;
+        <em>Reset</em> starts a new game.</div>
+      <div class="howto-item"><b>⚡ Demo games</b>
+        The chips below the pad instantly load three famous games — the exercise's
+        example (149), a perfect game (300), and all spares (150) — so you can see
+        a full scorecard without bowling 20 rolls.</div>
+      <div class="howto-item"><b>🧪 Run the test suite</b>
+        The <em>Run pytest</em> button executes the repo's real
+        <code>test_bowling.py</code> against <code>bowling.py</code> —
+        entirely in your browser. Green means every scoring and validation
+        rule holds. First run installs pytest, so give it a moment.</div>
+    </div>
+  </details>
+
   <!-- scorecard -->
   <section class="card">
     <div class="scorecard-scroll">
@@ -228,7 +275,10 @@
   <!-- controls -->
   <section class="card">
     <div class="controls">
-      <div class="pindeck" id="pindeck"></div>
+      <div class="lanewrap">
+        <canvas id="lane"></canvas>
+        <div class="caption" id="lanecaption">fresh rack</div>
+      </div>
       <div>
         <div class="pad">
           <div class="padrow" id="digitrow"></div>
@@ -280,6 +330,7 @@ const state = { rolls: [], ready: false };
 let pyodide = null;
 let testSource = "";
 let micropipReady = false;
+let lastCelebrated = "";
 
 const GAMES = {
   example: ["8","/","5","4","9","0","X","X","5","/","5","3","6","3","9","/","9","/","X"],
@@ -301,7 +352,6 @@ function analyze(rolls) {
 
   const done = t.length === 3 || (t.length === 2 && t[0] !== "X" && t[1] !== "/");
 
-  // which frame takes the next roll, and what's standing?
   let frameIdx = 9, fresh = true, standing = 10;
   for (let f = 0; f < 9; f++) {
     const fr = frames[f];
@@ -309,14 +359,12 @@ function analyze(rolls) {
     if (fr.length === 1 && fr[0].toUpperCase() !== "X") {
       frameIdx = f; fresh = false; standing = 10 - Number(fr[0]); break;
     }
-    if (f === 8 && (fr.length === 2 || fr[0].toUpperCase() === "X")) frameIdx = 9;
   }
   if (frameIdx === 9 && !done) {
     if (t.length === 1) {
       if (t[0] === "X") { fresh = true; }
       else { fresh = false; standing = 10 - Number(t[0]); }
     } else if (t.length === 2) {
-      // only reachable when t[0] === "X" or t[1] === "/" (otherwise done)
       if (t[1] === "X" || t[1] === "/") { fresh = true; }
       else { fresh = false; standing = 10 - Number(t[1]); }
     }
@@ -334,11 +382,271 @@ function pyFinalScore(rolls) {
   return JSON.parse(pyodide.runPython("json.dumps(ui_score(list(_rolls)))"));
 }
 
+/* ================================================= LANE (canvas game scene) */
+const laneCv = document.getElementById("lane");
+const lctx = laneCv.getContext("2d");
+const LW = 280, LH = 340, CX = LW / 2;
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+laneCv.width = LW * DPR; laneCv.height = LH * DPR;
+laneCv.style.width = LW + "px"; laneCv.style.height = LH + "px";
+lctx.scale(DPR, DPR);
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const SPEED = RM ? 6 : 1;
+
+/* pin coordinates, index 0 = head pin (front), 9 = back corner */
+const PIN_POS = [
+  [0, 122], [-17, 96], [17, 96],
+  [-34, 70], [0, 70], [34, 70],
+  [-51, 44], [-17, 44], [17, 44], [51, 44],
+].map(([x, y]) => [CX + x, y + 22]);
+const PIN_R = 8;
+const CONF_COLORS = ["#2dd4bf", "#f59e0b", "#f472b6", "#a78bfa", "#4ade80", "#fde68a"];
+
+const lane = {
+  up: Array(10).fill(true),   // which pins stand
+  pop: Array(10).fill(1),     // <=0 waiting, 0..1 dropping in, 1 settled
+  flying: [], sparks: [], confetti: [],
+  ball: null, splash: null, shake: 0, busy: false, t: 0,
+};
+
+function laneSync(standingCount) {
+  const downed = 10 - standingCount;
+  for (let i = 0; i < 10; i++) { lane.up[i] = i >= downed; lane.pop[i] = 1; }
+  lane.flying = []; lane.ball = null;
+}
+
+function laneRack() {
+  for (let i = 0; i < 10; i++) {
+    if (!lane.up[i]) { lane.up[i] = true; lane.pop[i] = -i * 0.05; }
+  }
+}
+
+function laneSplash(text, color) { lane.splash = { text, color, born: lane.t }; }
+
+function confettiBurst(n) {
+  for (let k = 0; k < n; k++) {
+    lane.confetti.push({
+      x: CX + (Math.random() * 140 - 70), y: 60 + Math.random() * 60,
+      vx: Math.random() * 160 - 80, vy: -60 - Math.random() * 120,
+      rot: Math.random() * 6, vr: Math.random() * 10 - 5,
+      color: CONF_COLORS[k % CONF_COLORS.length],
+      life: 1.4 + Math.random() * 0.6, size: 3 + Math.random() * 4,
+    });
+  }
+}
+
+function laneRoll(sym, standingBefore, onImpact, onSettled) {
+  const knocked = sym === "X" ? 10 : sym === "/" ? standingBefore : Number(sym);
+  const downFrom = 10 - standingBefore;
+  const fallIdx = [];
+  for (let i = downFrom; i < 10 && fallIdx.length < knocked; i++) fallIdx.push(i);
+  const gutter = knocked === 0;
+  const targetX = gutter
+    ? (Math.random() < 0.5 ? 16 : LW - 16)
+    : fallIdx.reduce((s, i) => s + PIN_POS[i][0], 0) / fallIdx.length + (Math.random() * 8 - 4);
+  const impactY = gutter ? 110 : Math.max(...fallIdx.map(i => PIN_POS[i][1])) + PIN_R + 9;
+  lane.ball = {
+    x: CX + (Math.random() * 40 - 20), y: LH - 16, targetX, impactY,
+    fallIdx, gutter, sym, knocked, v: 330 * SPEED, hit: false, trail: [],
+    onImpact, onSettled,
+  };
+  lane.busy = true;
+}
+
+function laneImpact(ball) {
+  ball.hit = true;
+  if (!ball.gutter) {
+    for (const i of ball.fallIdx) {
+      lane.up[i] = false;
+      const [px, py] = PIN_POS[i];
+      lane.flying.push({
+        x: px, y: py,
+        vx: (px - ball.x) * 7 + (Math.random() * 140 - 70),
+        vy: -140 - Math.random() * 240,
+        rot: 0, vr: Math.random() * 14 - 7, life: 0.95,
+      });
+    }
+    for (let k = 0; k < 14; k++) {
+      lane.sparks.push({
+        x: ball.x + (Math.random() * 30 - 15), y: ball.impactY - 10,
+        vx: Math.random() * 300 - 150, vy: -Math.random() * 260,
+        life: 0.25 + Math.random() * 0.25,
+      });
+    }
+  }
+  const up = ball.sym.toUpperCase();
+  if (up === "X") { lane.shake = 11; laneSplash("STRIKE!", "#f59e0b"); confettiBurst(36); }
+  else if (up === "/") { lane.shake = 7; laneSplash("SPARE!", "#2dd4bf"); confettiBurst(22); }
+  else if (ball.gutter) { laneSplash("GUTTER…", "#8b93a7"); }
+  else if (ball.knocked >= 8) { lane.shake = 5; laneSplash("NICE!", "#e8ecf4"); }
+  else { lane.shake = Math.min(4, ball.knocked * 0.5); }
+  ball.onImpact && ball.onImpact();
+  setTimeout(() => { const cb = ball.onSettled; ball.onSettled = null; cb && cb(); }, 620 / SPEED);
+}
+
+function laneTick(dt) {
+  lane.t += dt;
+  lane.shake = Math.max(0, lane.shake - dt * 30);
+
+  const b = lane.ball;
+  if (b) {
+    b.trail.push([b.x, b.y]);
+    if (b.trail.length > 9) b.trail.shift();
+    b.y -= b.v * dt;
+    b.x += (b.targetX - b.x) * Math.min(1, dt * 4.2);
+    if (!b.hit && b.y <= b.impactY) laneImpact(b);
+    if (b.y < -30) lane.ball = null;
+  }
+
+  for (let i = 0; i < 10; i++) {
+    if (lane.up[i] && lane.pop[i] < 1) lane.pop[i] = Math.min(1, lane.pop[i] + dt * 3.4);
+  }
+  lane.flying = lane.flying.filter(p => (
+    p.x += p.vx * dt, p.y += p.vy * dt, p.vx *= 0.985, p.vy *= 0.985,
+    p.rot += p.vr * dt, p.life -= dt * 1.15, p.life > 0));
+  lane.sparks = lane.sparks.filter(p => (
+    p.x += p.vx * dt, p.y += p.vy * dt, p.life -= dt * 2.4, p.life > 0));
+  lane.confetti = lane.confetti.filter(p => (
+    p.x += p.vx * dt, p.y += p.vy * dt, p.vy += 320 * dt,
+    p.rot += p.vr * dt, p.life -= dt * 0.7, p.life > 0 && p.y < LH + 10));
+  if (lane.splash && lane.t - lane.splash.born > 1.15) lane.splash = null;
+}
+
+function drawPinSprite(x, y, scale, alpha, rot) {
+  lctx.save();
+  lctx.translate(x, y);
+  if (rot) lctx.rotate(rot);
+  lctx.scale(scale, scale);
+  lctx.globalAlpha = alpha;
+  const g = lctx.createRadialGradient(-2.5, -3, 1, 0, 0, PIN_R + 1);
+  g.addColorStop(0, "#ffffff"); g.addColorStop(1, "#aab3c8");
+  lctx.beginPath(); lctx.arc(0, 0, PIN_R, 0, Math.PI * 2);
+  lctx.fillStyle = g;
+  lctx.shadowColor = "rgba(45, 212, 191, 0.5)"; lctx.shadowBlur = 7;
+  lctx.fill();
+  lctx.shadowBlur = 0;
+  lctx.fillStyle = "rgba(248, 113, 113, 0.9)";
+  lctx.fillRect(-4.5, -5.5, 9, 2.4);
+  lctx.restore();
+}
+
+function laneDraw() {
+  lctx.clearRect(0, 0, LW, LH);
+  lctx.save();
+  if (lane.shake > 0.3) {
+    lctx.translate((Math.random() - 0.5) * lane.shake, (Math.random() - 0.5) * lane.shake);
+  }
+
+  /* lane bed */
+  const edgeB = 12, edgeT = 26;
+  const wood = lctx.createLinearGradient(0, LH, 0, 0);
+  wood.addColorStop(0, "#171226"); wood.addColorStop(1, "#0d1322");
+  lctx.beginPath();
+  lctx.moveTo(edgeB, LH); lctx.lineTo(LW - edgeB, LH);
+  lctx.lineTo(LW - edgeT, 0); lctx.lineTo(edgeT, 0);
+  lctx.closePath(); lctx.fillStyle = wood; lctx.fill();
+
+  /* boards (converging seams) */
+  lctx.strokeStyle = "rgba(255,255,255,0.045)"; lctx.lineWidth = 1;
+  for (let k = 1; k < 7; k++) {
+    const bx = edgeB + (LW - 2 * edgeB) * k / 7;
+    const tx = edgeT + (LW - 2 * edgeT) * k / 7;
+    lctx.beginPath(); lctx.moveTo(bx, LH); lctx.lineTo(tx, 0); lctx.stroke();
+  }
+  /* aiming arrows */
+  lctx.fillStyle = "rgba(45, 212, 191, 0.28)";
+  for (const [ax, ay] of [[CX, 225], [CX - 26, 240], [CX + 26, 240], [CX - 52, 255], [CX + 52, 255]]) {
+    lctx.beginPath(); lctx.moveTo(ax, ay - 7); lctx.lineTo(ax - 4.5, ay + 4); lctx.lineTo(ax + 4.5, ay + 4);
+    lctx.closePath(); lctx.fill();
+  }
+  /* neon rails */
+  lctx.lineWidth = 2; lctx.strokeStyle = "rgba(45, 212, 191, 0.5)";
+  lctx.shadowColor = "rgba(45, 212, 191, 0.8)"; lctx.shadowBlur = 8;
+  lctx.beginPath(); lctx.moveTo(edgeB, LH); lctx.lineTo(edgeT, 0); lctx.stroke();
+  lctx.beginPath(); lctx.moveTo(LW - edgeB, LH); lctx.lineTo(LW - edgeT, 0); lctx.stroke();
+  lctx.shadowBlur = 0;
+
+  /* sparks */
+  for (const p of lane.sparks) {
+    lctx.globalAlpha = Math.max(0, p.life * 3);
+    lctx.fillStyle = "#ccfbf1";
+    lctx.fillRect(p.x, p.y, 2.4, 2.4);
+  }
+  lctx.globalAlpha = 1;
+
+  /* flying (knocked) pins */
+  for (const p of lane.flying) drawPinSprite(p.x, p.y, 1, Math.max(0, p.life), p.rot);
+
+  /* standing pins (with idle glint + drop-in pop) */
+  for (let i = 9; i >= 0; i--) {
+    if (!lane.up[i]) continue;
+    const pop = lane.pop[i];
+    if (pop <= 0) continue;
+    const over = pop < 1 ? 1.45 - 0.45 * pop : 1;           // overshoot as it lands
+    const wob = 1 + Math.sin(lane.t * 2.2 + i * 1.7) * 0.02; // idle wobble
+    drawPinSprite(PIN_POS[i][0], PIN_POS[i][1], pop * over * wob, Math.min(1, pop * 1.4), 0);
+  }
+
+  /* ball + trail */
+  const b = lane.ball;
+  if (b) {
+    b.trail.forEach(([tx, ty], k) => {
+      lctx.globalAlpha = (k / b.trail.length) * 0.35;
+      lctx.beginPath(); lctx.arc(tx, ty, 9 * (k / b.trail.length), 0, Math.PI * 2);
+      lctx.fillStyle = "#2dd4bf"; lctx.fill();
+    });
+    lctx.globalAlpha = 1;
+    const bg = lctx.createRadialGradient(b.x - 3, b.y - 3, 1, b.x, b.y, 11);
+    bg.addColorStop(0, "#99f6e4"); bg.addColorStop(0.5, "#2dd4bf"); bg.addColorStop(1, "#0f766e");
+    lctx.beginPath(); lctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
+    lctx.fillStyle = bg;
+    lctx.shadowColor = "rgba(45, 212, 191, 0.9)"; lctx.shadowBlur = 16;
+    lctx.fill(); lctx.shadowBlur = 0;
+  }
+
+  /* confetti */
+  for (const p of lane.confetti) {
+    lctx.save();
+    lctx.translate(p.x, p.y); lctx.rotate(p.rot);
+    lctx.globalAlpha = Math.max(0, Math.min(1, p.life));
+    lctx.fillStyle = p.color;
+    lctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    lctx.restore();
+  }
+
+  /* splash text */
+  if (lane.splash) {
+    const age = lane.t - lane.splash.born;
+    const k = Math.min(1, age * 5);
+    const scale = 0.4 + 0.6 * (1 + 2.2 * (k - 1) * k * k + k);  // ease-out-back-ish
+    const alpha = age > 0.8 ? Math.max(0, 1 - (age - 0.8) / 0.35) : 1;
+    lctx.save();
+    lctx.translate(CX, 178); lctx.scale(scale, scale);
+    lctx.globalAlpha = alpha;
+    lctx.font = "800 30px Inter, sans-serif";
+    lctx.textAlign = "center"; lctx.textBaseline = "middle";
+    lctx.shadowColor = lane.splash.color; lctx.shadowBlur = 22;
+    lctx.fillStyle = lane.splash.color;
+    lctx.fillText(lane.splash.text, 0, 0);
+    lctx.restore();
+  }
+  lctx.restore();
+}
+
+let lastFrameT = performance.now();
+(function loop(now) {
+  const dt = Math.min((now - lastFrameT) / 1000, 0.05);
+  lastFrameT = now;
+  laneTick(dt);
+  laneDraw();
+  requestAnimationFrame(loop);
+})(lastFrameT);
+
 /* ------------------------------------------------ rendering */
 const scorecardEl = document.getElementById("scorecard");
 const totalEl = document.getElementById("totalval");
 const statusEl = document.getElementById("status");
-const pindeckEl = document.getElementById("pindeck");
+const captionEl = document.getElementById("lanecaption");
 
 function rollBox(sym) {
   const mark = sym && (sym.toUpperCase() === "X" || sym === "/");
@@ -364,49 +672,67 @@ function render() {
   const lastScore = [...scores].reverse().find(s => s !== null);
   totalEl.textContent = lastScore ?? 0;
 
-  // pin deck (rows of 4-3-2-1, front pin at the bottom)
-  const downCount = a.fresh ? 0 : 10 - a.standing;
-  let pinNo = 10;
-  pindeckEl.innerHTML = [4, 3, 2, 1].map(row =>
-    `<div class="pinrow">${Array.from({ length: row }, () =>
-      `<div class="pin${(pinNo--) <= downCount ? " down" : ""}"></div>`).join("")}</div>`
-  ).join("") + `<div class="caption">${a.done ? "game over" : a.fresh ? "fresh rack" : a.standing + " pins standing"}</div>`;
+  captionEl.textContent = a.done ? "game over — nice bowling!"
+    : a.fresh ? "fresh rack" : a.standing + " pins standing";
 
-  // keys
+  const lock = !state.ready || lane.busy;
   document.querySelectorAll("[data-digit]").forEach(btn => {
     const d = Number(btn.dataset.digit);
-    btn.disabled = a.done || !state.ready || (a.fresh ? false : d > a.standing - 1);
+    btn.disabled = lock || a.done || (a.fresh ? false : d > a.standing - 1);
   });
-  document.getElementById("key-x").disabled = a.done || !state.ready || !a.fresh;
-  document.getElementById("key-slash").disabled = a.done || !state.ready || a.fresh;
-  document.getElementById("key-undo").disabled = !state.ready || state.rolls.length === 0;
-  document.getElementById("key-reset").disabled = !state.ready || state.rolls.length === 0;
-  document.querySelectorAll(".chip").forEach(c => c.disabled = !state.ready);
+  document.getElementById("key-x").disabled = lock || a.done || !a.fresh;
+  document.getElementById("key-slash").disabled = lock || a.done || a.fresh;
+  document.getElementById("key-undo").disabled = lock || state.rolls.length === 0;
+  document.getElementById("key-reset").disabled = lock || state.rolls.length === 0;
+  document.querySelectorAll(".chip").forEach(c => c.disabled = lock);
 
-  // status line
   statusEl.className = "";
   if (!state.ready) statusEl.textContent = "";
   else if (a.done) {
     const res = pyFinalScore(state.rolls);
     if (!res.ok) { statusEl.className = "error"; statusEl.textContent = "⚠ " + res.error; }
-    else if (res.scores[9] === 300) { statusEl.className = "perfect"; statusEl.textContent = "★ PERFECT GAME ★"; }
-    else { statusEl.className = "done"; statusEl.textContent = `Game complete — validated by score_game() ✓`; }
+    else if (res.scores[9] === 300) {
+      statusEl.className = "perfect"; statusEl.textContent = "★ PERFECT GAME ★";
+      const key = state.rolls.join(",");
+      if (lastCelebrated !== key) {
+        lastCelebrated = key;
+        laneSplash("PERFECT!", "#f59e0b");
+        confettiBurst(90);
+      }
+    }
+    else { statusEl.className = "done"; statusEl.textContent = "Game complete — validated by score_game() ✓"; }
   }
   else if (state.rolls.length === 0) statusEl.textContent = "Roll the first ball to begin.";
   else statusEl.textContent = `Frame ${a.frameIdx + 1} — ${a.fresh ? "first ball, fresh rack" : "spare attempt, " + a.standing + " pins up"}`;
 }
 
+function syncLaneToState() {
+  const a = analyze(state.rolls);
+  laneSync(a.done ? 10 : a.fresh ? 10 : a.standing);
+}
+
 /* ------------------------------------------------ input */
 function addRoll(sym) {
-  if (!state.ready) return;
+  if (!state.ready || lane.busy) return;
   const a = analyze(state.rolls);
   if (a.done) return;
   const s = sym.toUpperCase() === "X" ? "X" : sym;
   if (s === "X" && !a.fresh) return;
   if (s === "/" && a.fresh) return;
   if (/^\d$/.test(s) && !a.fresh && Number(s) > a.standing - 1) return;
+
+  const standingBefore = a.fresh ? 10 : a.standing;
   state.rolls.push(s);
-  render();
+  const after = analyze(state.rolls);
+
+  laneRoll(s, standingBefore,
+    () => render(),                       // impact: scorecard catches up
+    () => {                               // pins settled
+      lane.busy = false;
+      if (!after.done && after.fresh) laneRack();
+      render();
+    });
+  render();                               // lock the pad while the ball rolls
 }
 
 const digitrow = document.getElementById("digitrow");
@@ -418,16 +744,26 @@ for (let d = 0; d <= 9; d++) {
 }
 document.getElementById("key-x").addEventListener("click", () => addRoll("X"));
 document.getElementById("key-slash").addEventListener("click", () => addRoll("/"));
-document.getElementById("key-undo").addEventListener("click", () => { state.rolls.pop(); render(); });
-document.getElementById("key-reset").addEventListener("click", () => { state.rolls = []; render(); });
+document.getElementById("key-undo").addEventListener("click", () => {
+  if (lane.busy) return;
+  state.rolls.pop(); syncLaneToState(); render();
+});
+document.getElementById("key-reset").addEventListener("click", () => {
+  if (lane.busy) return;
+  state.rolls = []; lastCelebrated = ""; syncLaneToState(); render();
+});
 document.querySelectorAll(".chip").forEach(c =>
-  c.addEventListener("click", () => { state.rolls = [...GAMES[c.dataset.game]]; render(); }));
+  c.addEventListener("click", () => {
+    if (lane.busy) return;
+    state.rolls = [...GAMES[c.dataset.game]];
+    syncLaneToState(); render();
+  }));
 
 document.addEventListener("keydown", e => {
   if (e.key >= "0" && e.key <= "9") addRoll(e.key);
   else if (e.key === "x" || e.key === "X") addRoll("X");
   else if (e.key === "/") { e.preventDefault(); addRoll("/"); }
-  else if (e.key === "Backspace") { state.rolls.pop(); render(); }
+  else if (e.key === "Backspace" && !lane.busy) { state.rolls.pop(); syncLaneToState(); render(); }
 });
 
 /* ------------------------------------------------ tests */
@@ -467,6 +803,11 @@ runBtn.addEventListener("click", async () => {
 });
 
 /* ------------------------------------------------ boot */
+if (!localStorage.getItem("howtoSeen")) {
+  document.getElementById("howto").open = true;
+  localStorage.setItem("howtoSeen", "1");
+}
+
 (async () => {
   render(); // skeleton while loading
   const [py, bowlingSrc, testSrc] = await Promise.all([

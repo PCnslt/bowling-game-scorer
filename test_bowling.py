@@ -56,6 +56,38 @@ def test_tenth_frame_open_frame_ends_the_game():
     assert scores[-1] == 27 + 7
 
 
+def test_tenth_frame_strike_then_spare_bonus():
+    # X then 9,/ in the tenth: 10 + 9 + 1 = 20 pins in the frame
+    scores = score_game(NINE_OPEN_FRAMES + ["X", "9", "/"])
+    assert scores[-1] == 27 + 20
+
+
+# ------------------------------------------------- more full-game scenarios
+
+@pytest.mark.parametrize("rolls, final_score", [
+    (["0"] * 20, 0),                              # gutter game
+    (["9", "0"] * 10, 90),                        # all nines
+    (["X"] + ["0"] * 18, 10),                     # one strike, then gutters
+    (["X", "9", "/"] * 5 + ["X"], 200),           # strike/spare all game ("Dutch 200")
+    (["X"] * 11 + ["9"], 299),                    # near-perfect
+    (["7", "2"] * 9 + ["7", "/", "X"], 101),      # tenth-frame spare with strike bonus
+])
+def test_full_game_totals(rolls, final_score):
+    assert score_game(rolls)[-1] == final_score
+
+
+def test_ninth_frame_strike_takes_both_tenth_frame_rolls():
+    scores = score_game(["1", "2"] * 8 + ["X"] + ["5", "3"])
+    assert scores[8] == 24 + 18  # 10 + 5 + 3
+    assert scores[9] == 42 + 8
+
+
+def test_ninth_frame_spare_takes_first_tenth_frame_roll():
+    scores = score_game(["1", "2"] * 8 + ["4", "/"] + ["5", "3"])
+    assert scores[8] == 24 + 15  # 10 + 5
+    assert scores[9] == 39 + 8
+
+
 # ----------------------------------------------------------- validation
 
 @pytest.mark.parametrize("rolls, reason", [
@@ -71,6 +103,10 @@ def test_tenth_frame_open_frame_ends_the_game():
     (["1", "X"] + ["1", "2"] * 9, "strike as the second roll of a frame"),
     (["X", "/"] + ["1", "2"] * 8 + ["1", "2"], "spare directly after a strike"),
     (["1", "2"] * 9 + ["X", "5", "9"], "impossible bonus pair in the 10th"),
+    (["10", "0"] + ["1", "2"] * 9, "multi-digit symbol"),
+    ([""] + ["1", "2"] * 9, "empty-string symbol"),
+    ([], "empty game"),
+    (["1", "2"] * 9 + ["X", "X", "/"], "spare after a strike bonus in the 10th"),
 ])
 def test_invalid_games_raise_value_error(rolls, reason):
     with pytest.raises(ValueError):
