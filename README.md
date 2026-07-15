@@ -5,6 +5,20 @@ A small Python library that scores a ten-pin bowling game, written for the
 
 No dependencies for the library itself; `pytest` is used for the tests.
 
+## Live demo (GitHub Pages)
+
+**https://pcnslt.github.io/bowling-game-scorer/**
+
+An interactive scorecard that runs the *actual* `bowling.py` in your browser
+via [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) — no
+backend and no reimplementation of the scoring logic in JavaScript. It also
+has a **Run pytest** button that executes the real `test_bowling.py` suite
+in the browser.
+
+The site is built and deployed by GitHub Actions
+([`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)),
+which runs the test suite first and only deploys if it passes.
+
 ## Input style (Option B: Rolls)
 
 The scorer takes **a flat list of roll symbols, in order**:
