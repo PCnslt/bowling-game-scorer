@@ -10,127 +10,123 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0f1a;
-    --panel: rgba(255, 255, 255, 0.04);
-    --panel-border: rgba(255, 255, 255, 0.09);
+    --panel: rgba(10, 15, 26, 0.78);
+    --panel-border: rgba(255, 255, 255, 0.10);
     --ink: #e8ecf4;
     --ink-dim: #8b93a7;
     --accent: #2dd4bf;
     --accent-2: #f59e0b;
     --danger: #f87171;
     --ok: #4ade80;
-    --radius: 16px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { color-scheme: dark; }
   body {
-    background:
-      radial-gradient(1100px 500px at 50% -10%, rgba(45, 212, 191, 0.09), transparent 60%),
-      radial-gradient(900px 500px at 85% 110%, rgba(245, 158, 11, 0.07), transparent 60%),
-      var(--bg);
+    background: #05070d;
     color: var(--ink);
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     min-height: 100vh;
-    padding: 40px 20px 70px;
+    overflow-x: hidden;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; }
 
-  /* ---------- header ---------- */
-  header { text-align: center; margin-bottom: 28px; }
-  .kicker {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  /* ============ the lane fills the whole screen ============ */
+  #lane { position: fixed; inset: 0; z-index: 0; display: block; }
+
+  /* ============ floating HUD ============ */
+  .hud {
+    position: relative; z-index: 2;
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 14px 14px; gap: 10px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+    position: relative;
+  }
+  .tag {
+    position: absolute; top: -9px; left: 14px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.16em;
     color: var(--accent);
-    border: 1px solid rgba(45, 212, 191, 0.25);
-    background: rgba(45, 212, 191, 0.07);
-    padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
+    background: #0b1420;
+    border: 1px solid rgba(45, 212, 191, 0.4);
+    padding: 2px 9px; border-radius: 999px;
+    pointer-events: none;
   }
-  h1 {
-    font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -0.03em;
-    background: linear-gradient(92deg, #fff 20%, var(--accent) 60%, var(--accent-2));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    margin-bottom: 12px;
-  }
-  header p { color: var(--ink-dim); font-size: 15.5px; max-width: 560px; margin: 0 auto; line-height: 1.6; }
-  header p code, .howto code {
-    font-family: "JetBrains Mono", monospace; font-size: 13px;
+
+  /* top bar */
+  .topbar { width: 100%; display: flex; justify-content: space-between; gap: 10px; }
+  .brand, .ghlink {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; font-weight: 700;
     background: var(--panel); border: 1px solid var(--panel-border);
-    padding: 1px 7px; border-radius: 6px; color: var(--accent);
+    border-radius: 999px; padding: 7px 14px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   }
+  .brand small { color: var(--ink-dim); font-weight: 500; }
+  .ghlink { color: var(--accent); text-decoration: none; }
+  .ghlink:hover { border-color: var(--accent); }
 
-  /* ---------- loader ---------- */
-  #loader {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    color: var(--ink-dim); font-size: 14px; padding: 14px;
-    border: 1px dashed var(--panel-border); border-radius: var(--radius);
-    margin-bottom: 22px; transition: opacity 0.4s;
-  }
-  #loader .dot {
-    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
-    animation: pulse 1.1s ease-in-out infinite;
-  }
-  @keyframes pulse { 50% { opacity: 0.2; transform: scale(0.7); } }
-
-  /* ---------- how to use ---------- */
-  .card {
-    background: var(--panel); border: 1px solid var(--panel-border);
-    border-radius: var(--radius); backdrop-filter: blur(12px);
-    padding: 22px; margin-bottom: 22px;
-  }
-  details.howto { padding: 0; overflow: hidden; }
-  details.howto summary {
-    list-style: none; cursor: pointer; user-select: none;
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px 22px; font-weight: 700; font-size: 15px;
-  }
-  details.howto summary::-webkit-details-marker { display: none; }
-  details.howto summary .chev { margin-left: auto; color: var(--ink-dim); transition: transform 0.25s; font-size: 13px; }
-  details.howto[open] summary .chev { transform: rotate(180deg); }
-  details.howto summary:hover { background: rgba(255, 255, 255, 0.03); }
-  .howto-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px; padding: 4px 22px 22px;
-  }
-  .howto-item {
-    border: 1px solid var(--panel-border); border-radius: 12px;
-    background: rgba(0, 0, 0, 0.18); padding: 14px 16px;
-    font-size: 13.5px; line-height: 1.65; color: var(--ink-dim);
-  }
-  .howto-item b { color: var(--ink); display: block; margin-bottom: 5px; font-size: 14px; }
-  .howto-item kbd, .hint kbd {
-    font-family: "JetBrains Mono", monospace; font-size: 11px;
-    border: 1px solid var(--panel-border); border-bottom-width: 2px;
-    border-radius: 5px; padding: 1px 6px; background: rgba(0, 0, 0, 0.3); color: var(--ink);
-  }
-
-  /* ---------- scorecard ---------- */
-  .scorecard-scroll { overflow-x: auto; padding-bottom: 4px; }
-  .scorecard { display: grid; grid-template-columns: repeat(9, 1fr) 1.45fr; gap: 8px; min-width: 720px; }
+  /* scoreboard marquee */
+  .scoreboard { padding: 16px 16px 12px; max-width: 100%; }
+  .scorewrap { display: flex; align-items: center; gap: 14px; }
+  .scorecard-scroll { overflow-x: auto; scrollbar-width: thin; scroll-behavior: smooth; }
+  .scorecard { display: grid; grid-template-columns: repeat(9, 1fr) 1.4fr; gap: 5px; min-width: 620px; }
   .frame {
-    border: 1px solid var(--panel-border); border-radius: 12px;
-    background: rgba(255, 255, 255, 0.025); padding: 8px 6px 10px;
+    border: 1px solid var(--panel-border); border-radius: 9px;
+    background: rgba(255, 255, 255, 0.03); padding: 4px 3px 6px;
     text-align: center; transition: border-color 0.25s, box-shadow 0.25s;
   }
-  .frame.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 24px rgba(45, 212, 191, 0.12); }
-  .frame .num { font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-dim); margin-bottom: 7px; }
+  .frame.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(45, 212, 191, 0.2); }
+  .frame .num { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--ink-dim); margin-bottom: 4px; }
   .frame.active .num { color: var(--accent); }
-  .rolls { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
+  .rolls { display: flex; gap: 3px; justify-content: center; margin-bottom: 4px; }
   .rollbox {
-    width: 26px; height: 30px; border-radius: 7px;
-    border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.25);
+    width: 19px; height: 22px; border-radius: 5px;
+    border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.3);
     display: flex; align-items: center; justify-content: center;
-    font-family: "JetBrains Mono", monospace; font-size: 15px; font-weight: 600;
+    font-family: "JetBrains Mono", monospace; font-size: 11.5px; font-weight: 600;
   }
   .rollbox.mark { color: var(--accent-2); }
-  .frame .cum { font-size: 19px; font-weight: 700; min-height: 24px; font-variant-numeric: tabular-nums; }
+  .frame .cum { font-size: 14px; font-weight: 700; min-height: 17px; font-variant-numeric: tabular-nums; }
   .frame .cum.pending { color: var(--ink-dim); font-weight: 400; }
+  .total { text-align: center; padding: 0 6px; }
+  .total .label { color: var(--ink-dim); font-size: 9.5px; font-weight: 800; letter-spacing: 0.14em; }
+  .total .value {
+    font-size: 38px; font-weight: 800; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums; line-height: 1.05;
+    color: var(--accent);
+    text-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
+  }
 
-  /* ---------- total banner ---------- */
-  .totalbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
-  .total { display: flex; align-items: baseline; gap: 12px; }
-  .total .label { color: var(--ink-dim); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-  .total .value { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-  #status { font-size: 14px; color: var(--ink-dim); }
+  /* how-to steps */
+  .steps { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 13px 14px 10px; }
+  .step {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: 999px; padding: 6px 13px;
+  }
+  .step .n { font-size: 15px; }
+  .step b { color: var(--accent-2); font-family: "JetBrains Mono", monospace; }
+
+  .spacer { flex: 1 1 auto; min-height: 34vh; pointer-events: none; }
+
+  .lanetag {
+    position: fixed; left: 12px; top: 50%; transform: rotate(-90deg) translateX(-50%);
+    transform-origin: left center;
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.22em; color: rgba(139, 147, 167, 0.6);
+    pointer-events: none; z-index: 1;
+  }
+
+  /* pad */
+  .padpanel { padding: 18px 18px 14px; text-align: center; max-width: 640px; }
+  #status { font-size: 14.5px; font-weight: 600; margin-bottom: 12px; min-height: 20px; }
   #status.perfect {
     font-weight: 800; font-size: 18px;
     background: linear-gradient(92deg, var(--accent-2), #fde68a, var(--accent-2));
@@ -140,186 +136,179 @@
   @keyframes shimmer { to { background-position: 200% center; } }
   #status.error { color: var(--danger); }
   #status.done { color: var(--ok); }
-
-  /* ---------- controls ---------- */
-  .controls { display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: center; }
-  @media (max-width: 720px) { .controls { grid-template-columns: 1fr; justify-items: center; } }
-
-  .lanewrap { display: flex; flex-direction: column; align-items: center; gap: 9px; }
-  #lane {
-    border-radius: 14px; border: 1px solid var(--panel-border);
-    background: #06080f;
-    box-shadow: 0 0 40px rgba(45, 212, 191, 0.06), inset 0 0 30px rgba(0, 0, 0, 0.6);
-  }
-  .lanewrap .caption { font-size: 11.5px; color: var(--ink-dim); letter-spacing: 0.05em; }
-
-  .pad { display: flex; flex-direction: column; gap: 10px; }
-  .padrow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pad { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .padrow { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
   .key {
-    min-width: 52px; height: 52px; padding: 0 14px;
-    border-radius: 13px; border: 1px solid var(--panel-border);
-    background: rgba(255, 255, 255, 0.05); color: var(--ink);
-    font-family: "JetBrains Mono", monospace; font-size: 19px; font-weight: 600;
+    min-width: 46px; height: 46px; padding: 0 12px;
+    border-radius: 12px; border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.06); color: var(--ink);
+    font-family: "JetBrains Mono", monospace; font-size: 17px; font-weight: 600;
     cursor: pointer; transition: all 0.15s;
   }
-  .key:hover:not(:disabled) { background: rgba(45, 212, 191, 0.14); border-color: var(--accent); transform: translateY(-2px); }
+  .key:hover:not(:disabled) { background: rgba(45, 212, 191, 0.16); border-color: var(--accent); transform: translateY(-2px); }
   .key:active:not(:disabled) { transform: translateY(0); }
-  .key:disabled { opacity: 0.22; cursor: not-allowed; }
+  .key:disabled { opacity: 0.32; cursor: not-allowed; }
   .key.special { color: var(--accent-2); }
-  .key.util { font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink-dim); }
-  .key.util:hover:not(:disabled) { color: var(--ink); background: rgba(255, 255, 255, 0.09); border-color: var(--panel-border); }
-
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .key.util { font-family: "Inter", sans-serif; font-size: 12.5px; font-weight: 600; color: var(--ink-dim); }
+  .key.util:hover:not(:disabled) { color: var(--ink); background: rgba(255, 255, 255, 0.1); border-color: var(--panel-border); }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; margin-top: 11px; }
+  .chips .lbl { font-size: 11.5px; color: var(--ink-dim); align-self: center; font-weight: 600; }
   .chip {
     border: 1px solid var(--panel-border); background: transparent; color: var(--ink-dim);
-    font-size: 12.5px; font-weight: 600; padding: 7px 13px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
     cursor: pointer; transition: all 0.15s; font-family: "Inter", sans-serif;
   }
   .chip:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
   .chip:disabled { opacity: 0.3; cursor: not-allowed; }
-  .hint { font-size: 12.5px; color: var(--ink-dim); margin-top: 12px; }
 
-  /* ---------- tests ---------- */
-  .tests-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
-  .tests-head h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-  .tests-head p { color: var(--ink-dim); font-size: 13.5px; margin-top: 3px; }
-  .runbtn {
-    display: inline-flex; align-items: center; gap: 9px;
-    background: linear-gradient(92deg, var(--accent), #14b8a6);
-    color: #052e2b; border: none; border-radius: 12px;
-    font-family: "Inter", sans-serif; font-size: 14.5px; font-weight: 700;
-    padding: 12px 22px; cursor: pointer; transition: all 0.15s;
+  /* tests */
+  .testsfab {
+    position: fixed; right: 16px; bottom: 16px; z-index: 6;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--panel); border: 1px solid var(--panel-border);
+    color: var(--ink); font-family: "Inter", sans-serif;
+    font-size: 13px; font-weight: 700; padding: 11px 17px; border-radius: 999px;
+    cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: all 0.15s;
   }
-  .runbtn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-2px); }
-  .runbtn:disabled { opacity: 0.5; cursor: wait; transform: none; }
+  .testsfab:hover { border-color: var(--accent); color: var(--accent); }
+  .testspanel {
+    display: none;
+    position: fixed; right: 16px; bottom: 68px; z-index: 6;
+    width: min(560px, calc(100vw - 32px));
+    max-height: min(66vh, 560px); overflow-y: auto;
+    padding: 20px 18px 16px;
+  }
+  .testspanel.open { display: block; }
+  .tests-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .tests-head h2 { font-size: 15.5px; font-weight: 700; }
+  .tests-head p { color: var(--ink-dim); font-size: 12.5px; margin-top: 2px; }
+  .tests-head p code {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border);
+    padding: 1px 6px; border-radius: 5px; color: var(--accent);
+  }
+  .runbtn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(92deg, var(--accent), #14b8a6);
+    color: #052e2b; border: none; border-radius: 11px;
+    font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 700;
+    padding: 10px 18px; cursor: pointer; transition: all 0.15s;
+  }
+  .runbtn:hover:not(:disabled) { filter: brightness(1.1); }
+  .runbtn:disabled { opacity: 0.5; cursor: wait; }
   .badge {
-    font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600;
-    padding: 5px 12px; border-radius: 999px; display: none;
+    font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600;
+    padding: 4px 11px; border-radius: 999px; display: none;
   }
   .badge.pass { display: inline-block; color: var(--ok); background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.35); }
   .badge.fail { display: inline-block; color: var(--danger); background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.35); }
   #term {
-    display: none; margin-top: 16px; padding: 16px 18px; border-radius: 12px;
-    background: #05070d; border: 1px solid var(--panel-border);
-    font-family: "JetBrains Mono", monospace; font-size: 12.5px; line-height: 1.65;
-    white-space: pre-wrap; word-break: break-word; max-height: 420px; overflow-y: auto;
+    display: none; margin-top: 13px; padding: 13px 15px; border-radius: 11px;
+    background: #04060b; border: 1px solid var(--panel-border);
+    font-family: "JetBrains Mono", monospace; font-size: 11.5px; line-height: 1.6;
+    white-space: pre-wrap; word-break: break-word;
     color: #aab3c5;
   }
   #term .pass { color: var(--ok); }
   #term .fail { color: var(--danger); }
 
-  footer { text-align: center; margin-top: 34px; color: var(--ink-dim); font-size: 13px; line-height: 1.7; }
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+  /* loader */
+  #loader {
+    position: fixed; inset: 0; z-index: 10;
+    background: rgba(5, 7, 13, 0.72);
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    color: var(--ink); font-size: 15px; font-weight: 600;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    transition: opacity 0.4s;
+  }
+  #loader .dot {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.2; transform: scale(0.7); } }
+
+  @media (max-width: 760px) {
+    .spacer { min-height: 40vh; }
+    .brand small { display: none; }
+    .total .value { font-size: 30px; }
+    .lanetag { display: none; }
+    .hud { padding-bottom: 66px; }           /* keep the pad clear of the Tests button */
+    .testspanel { bottom: 62px; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <div class="kicker">🎳 Experis coding exercise</div>
-    <h1>Bowling Scorer</h1>
-    <p>An interactive scorecard powered by the <em>actual</em> <code>bowling.py</code> —
-       the Python module runs right here in your browser via WebAssembly (Pyodide).</p>
-  </header>
+<canvas id="lane"></canvas>
+<div class="lanetag">— THE LANE —</div>
 
-  <div id="loader"><span class="dot"></span> Loading the Python runtime…</div>
+<div class="hud">
 
-  <!-- how to use -->
-  <details class="card howto" id="howto">
-    <summary>📖 How to use this page <span class="chev">▼</span></summary>
-    <div class="howto-grid">
-      <div class="howto-item"><b>🎳 Bowl with the number pad</b>
-        Tap <kbd>0</kbd>–<kbd>9</kbd> for how many pins you knock down.
-        <kbd>X</kbd> is a strike (all 10 on the first ball); <kbd>/</kbd> is a spare
-        (clearing the rest on the second ball). Impossible buttons disable themselves —
-        after an 8, only <kbd>0</kbd>, <kbd>1</kbd> and <kbd>/</kbd> stay lit.</div>
-      <div class="howto-item"><b>🕹️ Watch the lane</b>
-        Every roll sends the ball down the lane: pins scatter, strikes shake the screen,
-        and rolling a 0 earns you a proper <em>GUTTER</em>. A fresh rack drops in
-        whenever a new frame (or bonus ball) needs one.</div>
-      <div class="howto-item"><b>🧮 Read the scorecard</b>
-        Each frame shows its rolls on top and the cumulative score below.
-        “…” means the frame is waiting on bonus rolls (a strike needs the next two,
-        a spare the next one). The glowing frame is the one you're bowling.</div>
-      <div class="howto-item"><b>⌨️ Keyboard shortcuts</b>
-        <kbd>0</kbd>–<kbd>9</kbd> roll, <kbd>X</kbd> strike, <kbd>/</kbd> spare,
-        <kbd>⌫ Backspace</kbd> undo. On-screen <em>Undo</em> takes back the last roll;
-        <em>Reset</em> starts a new game.</div>
-      <div class="howto-item"><b>⚡ Demo games</b>
-        The chips below the pad instantly load three famous games — the exercise's
-        example (149), a perfect game (300), and all spares (150) — so you can see
-        a full scorecard without bowling 20 rolls.</div>
-      <div class="howto-item"><b>🧪 Run the test suite</b>
-        The <em>Run pytest</em> button executes the repo's real
-        <code>test_bowling.py</code> against <code>bowling.py</code> —
-        entirely in your browser. Green means every scoring and validation
-        rule holds. First run installs pytest, so give it a moment.</div>
-    </div>
-  </details>
+  <div class="topbar">
+    <span class="brand">🎳 Bowling Scorer <small>· real Python in your browser</small></span>
+    <a class="ghlink" href="https://github.com/PCnslt/bowling-game-scorer" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
 
-  <!-- scorecard -->
-  <section class="card">
-    <div class="scorecard-scroll">
-      <div class="scorecard" id="scorecard"></div>
-    </div>
-    <div class="totalbar">
+  <section class="panel scoreboard">
+    <span class="tag">SCOREBOARD</span>
+    <div class="scorewrap">
+      <div class="scorecard-scroll"><div class="scorecard" id="scorecard"></div></div>
       <div class="total">
-        <span class="label">Total</span>
-        <span class="value" id="totalval">0</span>
-      </div>
-      <div id="status">Roll the first ball to begin.</div>
-    </div>
-  </section>
-
-  <!-- controls -->
-  <section class="card">
-    <div class="controls">
-      <div class="lanewrap">
-        <canvas id="lane"></canvas>
-        <div class="caption" id="lanecaption">fresh rack</div>
-      </div>
-      <div>
-        <div class="pad">
-          <div class="padrow" id="digitrow"></div>
-          <div class="padrow">
-            <button class="key special" id="key-slash" title="Spare">/</button>
-            <button class="key special" id="key-x" title="Strike">X</button>
-            <button class="key util" id="key-undo">⌫ Undo</button>
-            <button class="key util" id="key-reset">Reset</button>
-          </div>
-        </div>
-        <div class="chips">
-          <button class="chip" data-game="example">Load example game → 149</button>
-          <button class="chip" data-game="perfect">Perfect game → 300</button>
-          <button class="chip" data-game="spares">All spares → 150</button>
-        </div>
-        <div class="hint">Keyboard works too: <kbd>0</kbd>–<kbd>9</kbd> <kbd>X</kbd> <kbd>/</kbd> <kbd>⌫</kbd></div>
+        <div class="label">TOTAL</div>
+        <div class="value" id="totalval">0</div>
       </div>
     </div>
   </section>
 
-  <!-- tests -->
-  <section class="card">
-    <div class="tests-head">
-      <div>
-        <h2>Test suite</h2>
-        <p>Runs the repo's real <code>test_bowling.py</code> with pytest — in your browser.</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <span class="badge" id="testbadge"></span>
-        <button class="runbtn" id="runtests">▶ Run pytest</button>
-      </div>
-    </div>
-    <div id="term"></div>
+  <section class="panel steps">
+    <span class="tag">HOW TO PLAY</span>
+    <span class="step"><span class="n">1️⃣</span> Tap a number to bowl</span>
+    <span class="step"><span class="n">2️⃣</span> <b>X</b>&nbsp;= all pins&nbsp;·&nbsp;<b>/</b>&nbsp;= the rest</span>
+    <span class="step"><span class="n">3️⃣</span> Watch your score grow!</span>
   </section>
 
-  <footer>
-    Scoring, validation and tests live in
-    <a href="https://github.com/PCnslt/bowling-game-scorer" target="_blank" rel="noopener">PCnslt/bowling-game-scorer</a>.<br>
-    No backend, no reimplementation — the same Python the tests cover, compiled to WebAssembly.
-  </footer>
+  <div class="spacer"></div>
+
+  <section class="panel padpanel">
+    <span class="tag">YOUR BUTTONS</span>
+    <div id="status">Tap a number to roll your first ball!</div>
+    <div class="pad">
+      <div class="padrow" id="digitrow"></div>
+      <div class="padrow">
+        <button class="key special" id="key-x" title="Strike — all 10 pins!">X</button>
+        <button class="key special" id="key-slash" title="Spare — the rest of the pins!">/</button>
+        <button class="key util" id="key-undo">⌫ Undo</button>
+        <button class="key util" id="key-reset">Reset</button>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="lbl">Watch a famous game:</span>
+      <button class="chip" data-game="example">Example · 149</button>
+      <button class="chip" data-game="perfect">Perfect · 300</button>
+      <button class="chip" data-game="spares">All spares · 150</button>
+    </div>
+  </section>
+
 </div>
+
+<button class="testsfab" id="testsfab">🧪 Tests</button>
+<section class="panel testspanel" id="testspanel">
+  <span class="tag">TESTS</span>
+  <div class="tests-head">
+    <div>
+      <h2>Run the real pytest suite</h2>
+      <p><code>test_bowling.py</code> vs <code>bowling.py</code> — right here in your browser.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="badge" id="testbadge"></span>
+      <button class="runbtn" id="runtests">▶ Run pytest</button>
+    </div>
+  </div>
+  <div id="term"></div>
+</section>
+
+<div id="loader"><span class="dot"></span> Loading the Python runtime…</div>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 <script>
@@ -382,55 +371,99 @@ function pyFinalScore(rolls) {
   return JSON.parse(pyodide.runPython("json.dumps(ui_score(list(_rolls)))"));
 }
 
-/* ================================================= LANE (canvas game scene) */
+/* ================================================= LANE — full-screen game scene */
 const laneCv = document.getElementById("lane");
 const lctx = laneCv.getContext("2d");
-const LW = 280, LH = 340, CX = LW / 2;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
-laneCv.width = LW * DPR; laneCv.height = LH * DPR;
-laneCv.style.width = LW + "px"; laneCv.style.height = LH + "px";
-lctx.scale(DPR, DPR);
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SPEED = RM ? 6 : 1;
-
-/* pin coordinates, index 0 = head pin (front), 9 = back corner */
-const PIN_POS = [
-  [0, 122], [-17, 96], [17, 96],
-  [-34, 70], [0, 70], [34, 70],
-  [-51, 44], [-17, 44], [17, 44], [51, 44],
-].map(([x, y]) => [CX + x, y + 22]);
-const PIN_R = 8;
 const CONF_COLORS = ["#2dd4bf", "#f59e0b", "#f472b6", "#a78bfa", "#4ade80", "#fde68a"];
 
 const lane = {
-  up: Array(10).fill(true),   // which pins stand
-  pop: Array(10).fill(1),     // <=0 waiting, 0..1 dropping in, 1 settled
+  up: Array(10).fill(true),
+  pop: Array(10).fill(1),
   flying: [], sparks: [], confetti: [],
-  ball: null, splash: null, shake: 0, busy: false, t: 0,
+  ball: null, splash: null, rackAnim: null,
+  shake: 0, busy: false, t: 0, stormUntil: 0,
 };
+
+const geom = {};
+function layout() {
+  const W = window.innerWidth, H = window.innerHeight;
+  geom.W = W; geom.H = H; geom.CX = W / 2;
+  laneCv.width = Math.round(W * DPR);
+  laneCv.height = Math.round(H * DPR);
+  laneCv.style.width = W + "px";
+  laneCv.style.height = H + "px";
+  lctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  const base = Math.max(42, Math.min(92, H * 0.085));
+  geom.base = base;
+  /* the pin deck must sit below the floating scoreboard + how-to panels */
+  const steps = document.querySelector(".steps");
+  const panelsBottom = steps ? steps.getBoundingClientRect().bottom : H * 0.2;
+  const headY = Math.min(H * 0.58, Math.max(H * 0.30, panelsBottom + base * 2.9));
+  const offs = [[0], [-0.5, 0.5], [-1, 0, 1], [-1.5, -0.5, 0.5, 1.5]];
+  const pos = [];
+  for (let r = 0; r < 4; r++) {
+    const s = base * (1 - r * 0.055);
+    const y = headY - r * base * 0.60;
+    const gap = s * 1.14;
+    for (const o of offs[r]) pos.push({ x: geom.CX + o * gap, y, s });
+  }
+  geom.PIN_POS = pos;                       // index 0 = head pin (front)
+  geom.deckTopY = pos[9].y - base;
+  geom.halfTop = 1.5 * (base * 0.835 * 1.14) + base * 0.55;
+  geom.halfBottom = Math.min(W * 0.44, geom.halfTop * 2.4);
+  geom.gutterW = base * 0.34;
+  geom.ballR = base * 0.30;
+  geom.splashY = Math.min(H * 0.64, headY + base * 2.6);
+  geom.arrowsY = headY + (H - headY) * 0.36;
+  geom.dotsY = headY + (H - headY) * 0.60;
+
+  /* a ball already in flight must re-aim at the pins' new positions */
+  const b = lane.ball;
+  if (b && !b.hit && !b.gutter) {
+    b.targetX = b.fallIdx.reduce((s, i) => s + pos[i].x, 0) / b.fallIdx.length;
+    b.impactY = pos[b.fallIdx[0]].y - base * 0.18;
+  }
+}
+layout();
+window.addEventListener("resize", layout);
+
+function laneHalf(y) {
+  const { deckTopY, halfTop, halfBottom, H } = geom;
+  if (y <= deckTopY) return halfTop;
+  return halfTop + (halfBottom - halfTop) * (y - deckTopY) / (H - deckTopY);
+}
 
 function laneSync(standingCount) {
   const downed = 10 - standingCount;
   for (let i = 0; i < 10; i++) { lane.up[i] = i >= downed; lane.pop[i] = 1; }
-  lane.flying = []; lane.ball = null;
+  lane.flying = []; lane.ball = null; lane.rackAnim = null;
 }
 
 function laneRack() {
+  lane.rackAnim = { start: lane.t };
   for (let i = 0; i < 10; i++) {
-    if (!lane.up[i]) { lane.up[i] = true; lane.pop[i] = -i * 0.05; }
+    if (!lane.up[i]) { lane.up[i] = true; lane.pop[i] = -(0.95 + i * 0.12); }
   }
 }
+
+/* full rack duration in seconds (sweep bar + all pins fully grown) */
+const RACK_SECS = 0.95 / SPEED;
 
 function laneSplash(text, color) { lane.splash = { text, color, born: lane.t }; }
 
 function confettiBurst(n) {
+  const { CX, H } = geom;
   for (let k = 0; k < n; k++) {
     lane.confetti.push({
-      x: CX + (Math.random() * 140 - 70), y: 60 + Math.random() * 60,
-      vx: Math.random() * 160 - 80, vy: -60 - Math.random() * 120,
+      x: CX + (Math.random() * 300 - 150), y: H * 0.18 + Math.random() * H * 0.2,
+      vx: Math.random() * 220 - 110, vy: -80 - Math.random() * 160,
       rot: Math.random() * 6, vr: Math.random() * 10 - 5,
       color: CONF_COLORS[k % CONF_COLORS.length],
-      life: 1.4 + Math.random() * 0.6, size: 3 + Math.random() * 4,
+      life: 1.6 + Math.random() * 0.8, size: 4 + Math.random() * 6,
     });
   }
 }
@@ -441,168 +474,336 @@ function laneRoll(sym, standingBefore, onImpact, onSettled) {
   const fallIdx = [];
   for (let i = downFrom; i < 10 && fallIdx.length < knocked; i++) fallIdx.push(i);
   const gutter = knocked === 0;
+  const { CX, W, H, PIN_POS, base } = geom;
   const targetX = gutter
-    ? (Math.random() < 0.5 ? 16 : LW - 16)
-    : fallIdx.reduce((s, i) => s + PIN_POS[i][0], 0) / fallIdx.length + (Math.random() * 8 - 4);
-  const impactY = gutter ? 110 : Math.max(...fallIdx.map(i => PIN_POS[i][1])) + PIN_R + 9;
+    ? CX  /* gutter balls drift to the edge dynamically */
+    : fallIdx.reduce((s, i) => s + PIN_POS[i].x, 0) / fallIdx.length + (Math.random() * base * 0.14 - base * 0.07);
+  const impactY = gutter ? H * 0.42 : PIN_POS[fallIdx[0]].y - base * 0.18;
   lane.ball = {
-    x: CX + (Math.random() * 40 - 20), y: LH - 16, targetX, impactY,
-    fallIdx, gutter, sym, knocked, v: 330 * SPEED, hit: false, trail: [],
+    startX: CX + (Math.random() * W * 0.08 - W * 0.04),
+    startY: H + geom.ballR,
+    x: 0, y: H + geom.ballR,
+    targetX, impactY, fallIdx, gutter, sym, knocked,
+    v: Math.max(620, H * 1.15) * SPEED,
+    hookDir: Math.random() < 0.5 ? -1 : 1,
+    gutterSide: Math.random() < 0.5 ? -1 : 1,
+    rot: 0, hit: false, trail: [],
     onImpact, onSettled,
   };
+  lane.ball.x = lane.ball.startX;
   lane.busy = true;
 }
 
 function laneImpact(ball) {
   ball.hit = true;
+  const { PIN_POS, base, H } = geom;
   if (!ball.gutter) {
     for (const i of ball.fallIdx) {
       lane.up[i] = false;
-      const [px, py] = PIN_POS[i];
+      const p = PIN_POS[i];
       lane.flying.push({
-        x: px, y: py,
-        vx: (px - ball.x) * 7 + (Math.random() * 140 - 70),
-        vy: -140 - Math.random() * 240,
-        rot: 0, vr: Math.random() * 14 - 7, life: 0.95,
+        x: p.x, y: p.y - p.s * 0.5, s: p.s,
+        vx: (p.x - ball.x) * 9 + (Math.random() * base * 4 - base * 2),
+        vy: -(H * 0.55) - Math.random() * H * 0.5,
+        rot: 0, vr: Math.random() * 16 - 8, life: 1.05,
       });
     }
-    for (let k = 0; k < 14; k++) {
+    for (let k = 0; k < 16; k++) {
       lane.sparks.push({
-        x: ball.x + (Math.random() * 30 - 15), y: ball.impactY - 10,
-        vx: Math.random() * 300 - 150, vy: -Math.random() * 260,
-        life: 0.25 + Math.random() * 0.25,
+        x: ball.x + (Math.random() * base - base / 2), y: ball.impactY - base * 0.3,
+        vx: Math.random() * 500 - 250, vy: -Math.random() * 420,
+        life: 0.25 + Math.random() * 0.3,
       });
     }
   }
   const up = ball.sym.toUpperCase();
-  if (up === "X") { lane.shake = 11; laneSplash("STRIKE!", "#f59e0b"); confettiBurst(36); }
-  else if (up === "/") { lane.shake = 7; laneSplash("SPARE!", "#2dd4bf"); confettiBurst(22); }
+  if (up === "X") { lane.shake = 16; laneSplash("STRIKE!", "#f59e0b"); confettiBurst(48); }
+  else if (up === "/") { lane.shake = 9; laneSplash("SPARE!", "#2dd4bf"); confettiBurst(28); }
   else if (ball.gutter) { laneSplash("GUTTER…", "#8b93a7"); }
-  else if (ball.knocked >= 8) { lane.shake = 5; laneSplash("NICE!", "#e8ecf4"); }
+  else if (ball.knocked >= 8) { lane.shake = 6; laneSplash("NICE!", "#e8ecf4"); }
   else { lane.shake = Math.min(4, ball.knocked * 0.5); }
   ball.onImpact && ball.onImpact();
-  setTimeout(() => { const cb = ball.onSettled; ball.onSettled = null; cb && cb(); }, 620 / SPEED);
+  setTimeout(() => { const cb = ball.onSettled; ball.onSettled = null; cb && cb(); }, 640 / SPEED);
 }
 
 function laneTick(dt) {
   lane.t += dt;
-  lane.shake = Math.max(0, lane.shake - dt * 30);
+  lane.shake = Math.max(0, lane.shake - dt * 34);
+  const { H, W, deckTopY, gutterW } = geom;
 
   const b = lane.ball;
   if (b) {
     b.trail.push([b.x, b.y]);
-    if (b.trail.length > 9) b.trail.shift();
+    if (b.trail.length > 11) b.trail.shift();
     b.y -= b.v * dt;
-    b.x += (b.targetX - b.x) * Math.min(1, dt * 4.2);
+    b.rot += dt * 9;
+    const p = Math.max(0, Math.min(1, (b.startY - b.y) / (b.startY - b.impactY)));
+    if (b.gutter) {
+      const edgeX = geom.CX + b.gutterSide * (laneHalf(b.y) + gutterW * 0.55);
+      b.x += (edgeX - b.x) * Math.min(1, p * 2.2 + dt * 2);
+    } else {
+      const ease = p * p * (3 - 2 * p);
+      b.x = b.startX + (b.targetX - b.startX) * ease
+          + Math.sin(Math.PI * p) * W * 0.045 * b.hookDir * (1 - ease);
+    }
     if (!b.hit && b.y <= b.impactY) laneImpact(b);
-    if (b.y < -30) lane.ball = null;
+    if (b.y < deckTopY - geom.base) lane.ball = null;
   }
 
   for (let i = 0; i < 10; i++) {
-    if (lane.up[i] && lane.pop[i] < 1) lane.pop[i] = Math.min(1, lane.pop[i] + dt * 3.4);
+    if (lane.up[i] && lane.pop[i] < 1) lane.pop[i] = Math.min(1, lane.pop[i] + dt * 3.4 * SPEED);
   }
+  if (lane.rackAnim && (lane.t - lane.rackAnim.start) * SPEED > 0.85) lane.rackAnim = null;
+
   lane.flying = lane.flying.filter(p => (
-    p.x += p.vx * dt, p.y += p.vy * dt, p.vx *= 0.985, p.vy *= 0.985,
-    p.rot += p.vr * dt, p.life -= dt * 1.15, p.life > 0));
+    p.x += p.vx * dt, p.y += p.vy * dt, p.vy += H * 1.1 * dt,
+    p.vx *= 0.99, p.rot += p.vr * dt, p.life -= dt * 0.95, p.life > 0));
   lane.sparks = lane.sparks.filter(p => (
     p.x += p.vx * dt, p.y += p.vy * dt, p.life -= dt * 2.4, p.life > 0));
   lane.confetti = lane.confetti.filter(p => (
-    p.x += p.vx * dt, p.y += p.vy * dt, p.vy += 320 * dt,
-    p.rot += p.vr * dt, p.life -= dt * 0.7, p.life > 0 && p.y < LH + 10));
-  if (lane.splash && lane.t - lane.splash.born > 1.15) lane.splash = null;
+    p.x += p.vx * dt, p.y += p.vy * dt, p.vy += 340 * dt,
+    p.rot += p.vr * dt, p.life -= dt * 0.6, p.life > 0 && p.y < H + 20));
+  if (lane.t < lane.stormUntil) {
+    for (let k = 0; k < 3; k++) {
+      lane.confetti.push({
+        x: Math.random() * W, y: -12,
+        vx: Math.random() * 120 - 60, vy: 60 + Math.random() * 160,
+        rot: Math.random() * 6, vr: Math.random() * 10 - 5,
+        color: CONF_COLORS[(Math.random() * CONF_COLORS.length) | 0],
+        life: 2.4, size: 4 + Math.random() * 6,
+      });
+    }
+  }
+  if (lane.splash && lane.t - lane.splash.born > 1.2) lane.splash = null;
 }
 
-function drawPinSprite(x, y, scale, alpha, rot) {
+/* -------- sprites -------- */
+function pinPath() {
+  lctx.beginPath();
+  lctx.moveTo(-0.115, 0.5);
+  lctx.bezierCurveTo(-0.30, 0.28, -0.22, 0.02, -0.08, -0.10);
+  lctx.bezierCurveTo(-0.20, -0.24, -0.16, -0.46, 0, -0.46);
+  lctx.bezierCurveTo(0.16, -0.46, 0.20, -0.24, 0.08, -0.10);
+  lctx.bezierCurveTo(0.22, 0.02, 0.30, 0.28, 0.115, 0.5);
+  lctx.closePath();
+}
+
+function drawPin(x, yCenter, s, rot, alpha, glow) {
   lctx.save();
-  lctx.translate(x, y);
+  lctx.translate(x, yCenter);
   if (rot) lctx.rotate(rot);
-  lctx.scale(scale, scale);
+  lctx.scale(s, s);
   lctx.globalAlpha = alpha;
-  const g = lctx.createRadialGradient(-2.5, -3, 1, 0, 0, PIN_R + 1);
-  g.addColorStop(0, "#ffffff"); g.addColorStop(1, "#aab3c8");
-  lctx.beginPath(); lctx.arc(0, 0, PIN_R, 0, Math.PI * 2);
+  pinPath();
+  const g = lctx.createLinearGradient(-0.22, 0, 0.24, 0);
+  g.addColorStop(0, "#ffffff");
+  g.addColorStop(0.55, "#e7ebf3");
+  g.addColorStop(1, "#96a1ba");
   lctx.fillStyle = g;
-  lctx.shadowColor = "rgba(45, 212, 191, 0.5)"; lctx.shadowBlur = 7;
+  if (glow) { lctx.shadowColor = "rgba(45, 212, 191, 0.45)"; lctx.shadowBlur = 10; }
   lctx.fill();
   lctx.shadowBlur = 0;
-  lctx.fillStyle = "rgba(248, 113, 113, 0.9)";
-  lctx.fillRect(-4.5, -5.5, 9, 2.4);
+  lctx.clip();
+  lctx.fillStyle = "rgba(239, 68, 68, 0.92)";
+  lctx.fillRect(-0.2, -0.225, 0.4, 0.05);
+  lctx.fillRect(-0.2, -0.15, 0.4, 0.042);
+  const rim = lctx.createLinearGradient(0.02, 0, 0.24, 0);
+  rim.addColorStop(0, "rgba(45, 212, 191, 0)");
+  rim.addColorStop(1, "rgba(45, 212, 191, 0.22)");
+  lctx.fillStyle = rim;
+  lctx.fillRect(-0.3, -0.5, 0.6, 1);
+  lctx.restore();
+}
+
+function drawBall(b) {
+  const r = geom.ballR;
+  b.trail.forEach(([tx, ty], k) => {
+    lctx.globalAlpha = (k / b.trail.length) * 0.3;
+    lctx.beginPath(); lctx.arc(tx, ty, r * 0.9 * (k / b.trail.length), 0, Math.PI * 2);
+    lctx.fillStyle = "#2dd4bf"; lctx.fill();
+  });
+  lctx.globalAlpha = 1;
+  /* glow on the boards under the ball */
+  lctx.save();
+  lctx.globalAlpha = 0.16;
+  lctx.beginPath();
+  lctx.ellipse(b.x, b.y + r * 1.7, r * 1.15, r * 0.3, 0, 0, Math.PI * 2);
+  lctx.fillStyle = "#2dd4bf"; lctx.fill();
+  lctx.restore();
+  const g = lctx.createRadialGradient(b.x - r * 0.35, b.y - r * 0.35, r * 0.1, b.x, b.y, r * 1.05);
+  g.addColorStop(0, "#7df3e1");
+  g.addColorStop(0.45, "#14b8a6");
+  g.addColorStop(1, "#0b4f4a");
+  lctx.beginPath(); lctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+  lctx.fillStyle = g;
+  lctx.shadowColor = "rgba(45, 212, 191, 0.85)"; lctx.shadowBlur = 22;
+  lctx.fill(); lctx.shadowBlur = 0;
+  /* finger holes spin with the ball */
+  lctx.save();
+  lctx.translate(b.x, b.y); lctx.rotate(b.rot);
+  lctx.fillStyle = "rgba(4, 30, 28, 0.85)";
+  for (const a of [-0.5, 0.5, Math.PI / 2]) {
+    lctx.beginPath();
+    lctx.arc(Math.cos(a) * r * 0.42, Math.sin(a) * r * 0.42, r * 0.11, 0, Math.PI * 2);
+    lctx.fill();
+  }
   lctx.restore();
 }
 
 function laneDraw() {
-  lctx.clearRect(0, 0, LW, LH);
+  const { W, H, CX, base, PIN_POS, deckTopY, halfTop, halfBottom, gutterW } = geom;
+  lctx.clearRect(0, 0, W, H);
   lctx.save();
   if (lane.shake > 0.3) {
     lctx.translate((Math.random() - 0.5) * lane.shake, (Math.random() - 0.5) * lane.shake);
   }
 
-  /* lane bed */
-  const edgeB = 12, edgeT = 26;
-  const wood = lctx.createLinearGradient(0, LH, 0, 0);
-  wood.addColorStop(0, "#171226"); wood.addColorStop(1, "#0d1322");
-  lctx.beginPath();
-  lctx.moveTo(edgeB, LH); lctx.lineTo(LW - edgeB, LH);
-  lctx.lineTo(LW - edgeT, 0); lctx.lineTo(edgeT, 0);
-  lctx.closePath(); lctx.fillStyle = wood; lctx.fill();
+  /* room */
+  const room = lctx.createLinearGradient(0, 0, 0, H);
+  room.addColorStop(0, "#070b16");
+  room.addColorStop(0.5, "#05070d");
+  room.addColorStop(1, "#080b14");
+  lctx.fillStyle = room;
+  lctx.fillRect(-20, -20, W + 40, H + 40);
+  /* glow behind the pin deck */
+  const pit = lctx.createRadialGradient(CX, deckTopY, 10, CX, deckTopY, W * 0.45);
+  pit.addColorStop(0, "rgba(45, 212, 191, 0.10)");
+  pit.addColorStop(1, "rgba(45, 212, 191, 0)");
+  lctx.fillStyle = pit;
+  lctx.fillRect(0, 0, W, H * 0.6);
 
-  /* boards (converging seams) */
-  lctx.strokeStyle = "rgba(255,255,255,0.045)"; lctx.lineWidth = 1;
-  for (let k = 1; k < 7; k++) {
-    const bx = edgeB + (LW - 2 * edgeB) * k / 7;
-    const tx = edgeT + (LW - 2 * edgeT) * k / 7;
-    lctx.beginPath(); lctx.moveTo(bx, LH); lctx.lineTo(tx, 0); lctx.stroke();
-  }
-  /* aiming arrows */
-  lctx.fillStyle = "rgba(45, 212, 191, 0.28)";
-  for (const [ax, ay] of [[CX, 225], [CX - 26, 240], [CX + 26, 240], [CX - 52, 255], [CX + 52, 255]]) {
-    lctx.beginPath(); lctx.moveTo(ax, ay - 7); lctx.lineTo(ax - 4.5, ay + 4); lctx.lineTo(ax + 4.5, ay + 4);
+  /* gutters */
+  lctx.fillStyle = "#03040a";
+  for (const side of [-1, 1]) {
+    lctx.beginPath();
+    lctx.moveTo(CX + side * halfBottom, H);
+    lctx.lineTo(CX + side * (halfBottom + gutterW * 1.7), H);
+    lctx.lineTo(CX + side * (halfTop + gutterW), deckTopY);
+    lctx.lineTo(CX + side * halfTop, deckTopY);
     lctx.closePath(); lctx.fill();
   }
+
+  /* lane bed */
+  const wood = lctx.createLinearGradient(0, H, 0, deckTopY);
+  wood.addColorStop(0, "#1b1430");
+  wood.addColorStop(0.55, "#141327");
+  wood.addColorStop(1, "#0e1524");
+  lctx.beginPath();
+  lctx.moveTo(CX - halfBottom, H);
+  lctx.lineTo(CX + halfBottom, H);
+  lctx.lineTo(CX + halfTop, deckTopY);
+  lctx.lineTo(CX - halfTop, deckTopY);
+  lctx.closePath();
+  lctx.fillStyle = wood; lctx.fill();
+
+  /* board seams */
+  lctx.strokeStyle = "rgba(255,255,255,0.05)"; lctx.lineWidth = 1;
+  for (let k = 1; k < 10; k++) {
+    const f = k / 10 - 0.5;
+    lctx.beginPath();
+    lctx.moveTo(CX + f * 2 * halfBottom * 0.96, H);
+    lctx.lineTo(CX + f * 2 * halfTop * 0.96, deckTopY);
+    lctx.stroke();
+  }
+  /* glossy sheen down the middle */
+  lctx.save();
+  lctx.beginPath();
+  lctx.moveTo(CX - halfBottom, H); lctx.lineTo(CX + halfBottom, H);
+  lctx.lineTo(CX + halfTop, deckTopY); lctx.lineTo(CX - halfTop, deckTopY);
+  lctx.closePath(); lctx.clip();
+  const sheen = lctx.createLinearGradient(0, deckTopY, 0, H);
+  sheen.addColorStop(0, "rgba(255,255,255,0.07)");
+  sheen.addColorStop(0.7, "rgba(255,255,255,0)");
+  lctx.fillStyle = sheen;
+  lctx.fillRect(CX - halfTop * 1.2, deckTopY, halfTop * 2.4, H - deckTopY);
+  lctx.restore();
+
+  /* aiming arrows + dots */
+  lctx.fillStyle = "rgba(45, 212, 191, 0.28)";
+  for (const [ox, oy] of [[0, 0], [-0.3, 0.05], [0.3, 0.05], [-0.6, 0.10], [0.6, 0.10]]) {
+    const y = geom.arrowsY + oy * H, hw = laneHalf(y);
+    const x = CX + ox * hw;
+    const a = base * 0.11;
+    lctx.beginPath();
+    lctx.moveTo(x, y - a * 1.6); lctx.lineTo(x - a, y + a); lctx.lineTo(x + a, y + a);
+    lctx.closePath(); lctx.fill();
+  }
+  lctx.fillStyle = "rgba(45, 212, 191, 0.22)";
+  for (const ox of [-0.45, -0.225, 0, 0.225, 0.45]) {
+    const y = geom.dotsY, hw = laneHalf(y);
+    lctx.beginPath(); lctx.arc(CX + ox * hw, y, base * 0.06, 0, Math.PI * 2); lctx.fill();
+  }
+
   /* neon rails */
-  lctx.lineWidth = 2; lctx.strokeStyle = "rgba(45, 212, 191, 0.5)";
-  lctx.shadowColor = "rgba(45, 212, 191, 0.8)"; lctx.shadowBlur = 8;
-  lctx.beginPath(); lctx.moveTo(edgeB, LH); lctx.lineTo(edgeT, 0); lctx.stroke();
-  lctx.beginPath(); lctx.moveTo(LW - edgeB, LH); lctx.lineTo(LW - edgeT, 0); lctx.stroke();
+  lctx.lineWidth = 2.5;
+  lctx.strokeStyle = "rgba(45, 212, 191, 0.55)";
+  lctx.shadowColor = "rgba(45, 212, 191, 0.9)"; lctx.shadowBlur = 12;
+  for (const side of [-1, 1]) {
+    lctx.beginPath();
+    lctx.moveTo(CX + side * (halfBottom + gutterW * 1.7), H);
+    lctx.lineTo(CX + side * (halfTop + gutterW), deckTopY);
+    lctx.stroke();
+  }
   lctx.shadowBlur = 0;
 
   /* sparks */
   for (const p of lane.sparks) {
-    lctx.globalAlpha = Math.max(0, p.life * 3);
+    lctx.globalAlpha = Math.max(0, Math.min(1, p.life * 3));
     lctx.fillStyle = "#ccfbf1";
-    lctx.fillRect(p.x, p.y, 2.4, 2.4);
+    lctx.fillRect(p.x, p.y, 3, 3);
   }
   lctx.globalAlpha = 1;
 
-  /* flying (knocked) pins */
-  for (const p of lane.flying) drawPinSprite(p.x, p.y, 1, Math.max(0, p.life), p.rot);
+  /* pin shadows */
+  lctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+  for (let i = 0; i < 10; i++) {
+    if (!lane.up[i] || lane.pop[i] <= 0) continue;
+    const p = PIN_POS[i];
+    lctx.save();
+    lctx.globalAlpha = 0.45 * Math.min(1, lane.pop[i]);
+    lctx.beginPath();
+    lctx.ellipse(p.x, p.y + p.s * 0.03, p.s * 0.2, p.s * 0.055, 0, 0, Math.PI * 2);
+    lctx.fill();
+    lctx.restore();
+  }
 
-  /* standing pins (with idle glint + drop-in pop) */
+  /* flying pins */
+  for (const p of lane.flying) {
+    drawPin(p.x, p.y, p.s * Math.max(0.6, p.life), p.rot, Math.max(0, Math.min(1, p.life)), false);
+  }
+
+  /* standing pins, back to front */
   for (let i = 9; i >= 0; i--) {
     if (!lane.up[i]) continue;
     const pop = lane.pop[i];
     if (pop <= 0) continue;
-    const over = pop < 1 ? 1.45 - 0.45 * pop : 1;           // overshoot as it lands
-    const wob = 1 + Math.sin(lane.t * 2.2 + i * 1.7) * 0.02; // idle wobble
-    drawPinSprite(PIN_POS[i][0], PIN_POS[i][1], pop * over * wob, Math.min(1, pop * 1.4), 0);
+    const p = PIN_POS[i];
+    const over = pop < 1 ? 1.35 - 0.35 * pop : 1;
+    const wob = 1 + Math.sin(lane.t * 2.1 + i * 1.7) * 0.012;
+    drawPin(p.x, p.y - p.s * 0.5, p.s * pop * over * wob, 0, Math.min(1, pop * 1.5), true);
   }
 
-  /* ball + trail */
-  const b = lane.ball;
-  if (b) {
-    b.trail.forEach(([tx, ty], k) => {
-      lctx.globalAlpha = (k / b.trail.length) * 0.35;
-      lctx.beginPath(); lctx.arc(tx, ty, 9 * (k / b.trail.length), 0, Math.PI * 2);
-      lctx.fillStyle = "#2dd4bf"; lctx.fill();
-    });
-    lctx.globalAlpha = 1;
-    const bg = lctx.createRadialGradient(b.x - 3, b.y - 3, 1, b.x, b.y, 11);
-    bg.addColorStop(0, "#99f6e4"); bg.addColorStop(0.5, "#2dd4bf"); bg.addColorStop(1, "#0f766e");
-    lctx.beginPath(); lctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
-    lctx.fillStyle = bg;
-    lctx.shadowColor = "rgba(45, 212, 191, 0.9)"; lctx.shadowBlur = 16;
-    lctx.fill(); lctx.shadowBlur = 0;
+  /* pinsetter sweep bar */
+  if (lane.rackAnim) {
+    const age = (lane.t - lane.rackAnim.start) * SPEED;
+    const barH = base * 0.55;
+    const restY = deckTopY - base * 0.55;
+    let barY;
+    if (age < 0.26) barY = -barH + (restY + barH) * (age / 0.26);
+    else if (age < 0.52) barY = restY;
+    else barY = restY - (restY + barH) * ((age - 0.52) / 0.33);
+    lctx.fillStyle = "#0b1120";
+    lctx.strokeStyle = "rgba(45, 212, 191, 0.7)";
+    lctx.lineWidth = 2;
+    const bw = (halfTop + gutterW) * 2;
+    lctx.beginPath();
+    if (lctx.roundRect) lctx.roundRect(CX - bw / 2, barY, bw, barH, 8);
+    else lctx.rect(CX - bw / 2, barY, bw, barH);
+    lctx.fill(); lctx.stroke();
   }
+
+  /* ball */
+  if (lane.ball) drawBall(lane.ball);
 
   /* confetti */
   for (const p of lane.confetti) {
@@ -618,14 +819,17 @@ function laneDraw() {
   if (lane.splash) {
     const age = lane.t - lane.splash.born;
     const k = Math.min(1, age * 5);
-    const scale = 0.4 + 0.6 * (1 + 2.2 * (k - 1) * k * k + k);  // ease-out-back-ish
-    const alpha = age > 0.8 ? Math.max(0, 1 - (age - 0.8) / 0.35) : 1;
+    /* easeOutBack: 0 at k=0, overshoots, settles at 1 */
+    const eased = 1 + 2.70158 * Math.pow(k - 1, 3) + 1.70158 * Math.pow(k - 1, 2);
+    const scale = 0.4 + 0.6 * eased;
+    const alpha = age > 0.85 ? Math.max(0, 1 - (age - 0.85) / 0.35) : 1;
+    const fs = Math.round(Math.max(30, Math.min(62, H * 0.058)));
     lctx.save();
-    lctx.translate(CX, 178); lctx.scale(scale, scale);
+    lctx.translate(CX, geom.splashY); lctx.scale(scale, scale);
     lctx.globalAlpha = alpha;
-    lctx.font = "800 30px Inter, sans-serif";
+    lctx.font = `800 ${fs}px Inter, sans-serif`;
     lctx.textAlign = "center"; lctx.textBaseline = "middle";
-    lctx.shadowColor = lane.splash.color; lctx.shadowBlur = 22;
+    lctx.shadowColor = lane.splash.color; lctx.shadowBlur = 26;
     lctx.fillStyle = lane.splash.color;
     lctx.fillText(lane.splash.text, 0, 0);
     lctx.restore();
@@ -646,7 +850,6 @@ let lastFrameT = performance.now();
 const scorecardEl = document.getElementById("scorecard");
 const totalEl = document.getElementById("totalval");
 const statusEl = document.getElementById("status");
-const captionEl = document.getElementById("lanecaption");
 
 function rollBox(sym) {
   const mark = sym && (sym.toUpperCase() === "X" || sym === "/");
@@ -663,17 +866,22 @@ function render() {
     const active = !a.done && f === a.frameIdx;
     const cum = scores[f];
     return `<div class="frame${active ? " active" : ""}">
-      <div class="num">FRAME ${f + 1}</div>
+      <div class="num">${f + 1}</div>
       <div class="rolls">${boxes.join("")}</div>
       <div class="cum${cum === null ? " pending" : ""}">${cum === null ? (fr.length ? "…" : "") : cum}</div>
     </div>`;
   }).join("");
 
+  /* keep the glowing frame centered when the scorecard scrolls (small screens) */
+  const act = scorecardEl.querySelector(".frame.active");
+  if (act) {
+    const sc = scorecardEl.parentElement;
+    const target = Math.max(0, act.offsetLeft - (sc.clientWidth - act.offsetWidth) / 2);
+    if (Math.abs(sc.scrollLeft - target) > 8) sc.scrollLeft = target;
+  }
+
   const lastScore = [...scores].reverse().find(s => s !== null);
   totalEl.textContent = lastScore ?? 0;
-
-  captionEl.textContent = a.done ? "game over — nice bowling!"
-    : a.fresh ? "fresh rack" : a.standing + " pins standing";
 
   const lock = !state.ready || lane.busy;
   document.querySelectorAll("[data-digit]").forEach(btn => {
@@ -692,23 +900,28 @@ function render() {
     const res = pyFinalScore(state.rolls);
     if (!res.ok) { statusEl.className = "error"; statusEl.textContent = "⚠ " + res.error; }
     else if (res.scores[9] === 300) {
-      statusEl.className = "perfect"; statusEl.textContent = "★ PERFECT GAME ★";
+      statusEl.className = "perfect"; statusEl.textContent = "★ PERFECT GAME — 300! ★";
       const key = state.rolls.join(",");
       if (lastCelebrated !== key) {
         lastCelebrated = key;
         laneSplash("PERFECT!", "#f59e0b");
-        confettiBurst(90);
+        confettiBurst(80);
+        lane.stormUntil = lane.t + 2.6;
       }
     }
-    else { statusEl.className = "done"; statusEl.textContent = "Game complete — validated by score_game() ✓"; }
+    else {
+      statusEl.className = "done";
+      statusEl.textContent = `Game over — you scored ${res.scores[9]}! 🎉 (checked by score_game ✓)`;
+    }
   }
-  else if (state.rolls.length === 0) statusEl.textContent = "Roll the first ball to begin.";
-  else statusEl.textContent = `Frame ${a.frameIdx + 1} — ${a.fresh ? "first ball, fresh rack" : "spare attempt, " + a.standing + " pins up"}`;
+  else if (state.rolls.length === 0) statusEl.textContent = "Tap a number to roll your first ball!";
+  else if (a.fresh) statusEl.textContent = `Frame ${a.frameIdx + 1} — new pins. Roll it!`;
+  else statusEl.textContent = `${a.standing} pin${a.standing === 1 ? "" : "s"} left — clear them for a spare /`;
 }
 
 function syncLaneToState() {
   const a = analyze(state.rolls);
-  laneSync(a.done ? 10 : a.fresh ? 10 : a.standing);
+  laneSync(a.done || a.fresh ? 10 : a.standing);
 }
 
 /* ------------------------------------------------ input */
@@ -728,8 +941,12 @@ function addRoll(sym) {
   laneRoll(s, standingBefore,
     () => render(),                       // impact: scorecard catches up
     () => {                               // pins settled
-      lane.busy = false;
-      if (!after.done && after.fresh) laneRack();
+      if (!after.done && after.fresh) {
+        laneRack();
+        setTimeout(() => { lane.busy = false; render(); }, RACK_SECS * 1000);
+      } else {
+        lane.busy = false;
+      }
       render();
     });
   render();                               // lock the pad while the ball rolls
@@ -746,7 +963,7 @@ document.getElementById("key-x").addEventListener("click", () => addRoll("X"));
 document.getElementById("key-slash").addEventListener("click", () => addRoll("/"));
 document.getElementById("key-undo").addEventListener("click", () => {
   if (lane.busy) return;
-  state.rolls.pop(); syncLaneToState(); render();
+  state.rolls.pop(); lastCelebrated = ""; syncLaneToState(); render();
 });
 document.getElementById("key-reset").addEventListener("click", () => {
   if (lane.busy) return;
@@ -756,20 +973,27 @@ document.querySelectorAll(".chip").forEach(c =>
   c.addEventListener("click", () => {
     if (lane.busy) return;
     state.rolls = [...GAMES[c.dataset.game]];
+    lastCelebrated = "";
     syncLaneToState(); render();
   }));
 
 document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;           // don't hijack browser shortcuts
+  if (testsPanel.classList.contains("open")) return;        // no accidental rolls while reading tests
   if (e.key >= "0" && e.key <= "9") addRoll(e.key);
   else if (e.key === "x" || e.key === "X") addRoll("X");
   else if (e.key === "/") { e.preventDefault(); addRoll("/"); }
-  else if (e.key === "Backspace" && !lane.busy) { state.rolls.pop(); syncLaneToState(); render(); }
+  else if (e.key === "Backspace" && !lane.busy) { state.rolls.pop(); lastCelebrated = ""; syncLaneToState(); render(); }
 });
 
 /* ------------------------------------------------ tests */
 const termEl = document.getElementById("term");
 const badgeEl = document.getElementById("testbadge");
 const runBtn = document.getElementById("runtests");
+const testsPanel = document.getElementById("testspanel");
+
+document.getElementById("testsfab").addEventListener("click", () =>
+  testsPanel.classList.toggle("open"));
 
 runBtn.addEventListener("click", async () => {
   if (!state.ready) return;
@@ -803,18 +1027,25 @@ runBtn.addEventListener("click", async () => {
 });
 
 /* ------------------------------------------------ boot */
-if (!localStorage.getItem("howtoSeen")) {
-  document.getElementById("howto").open = true;
-  localStorage.setItem("howtoSeen", "1");
-}
-
 (async () => {
   render(); // skeleton while loading
-  const [py, bowlingSrc, testSrc] = await Promise.all([
-    loadPyodide(),
-    fetch("bowling.py").then(r => r.text()),
-    fetch("test_bowling.py").then(r => r.text()),
-  ]);
+  let py, bowlingSrc, testSrc;
+  try {
+    [py, bowlingSrc, testSrc] = await Promise.all([
+      loadPyodide(),
+      fetch("bowling.py").then(r => { if (!r.ok) throw new Error("bowling.py " + r.status); return r.text(); }),
+      fetch("test_bowling.py").then(r => { if (!r.ok) throw new Error("test_bowling.py " + r.status); return r.text(); }),
+    ]);
+  } catch (err) {
+    const loader = document.getElementById("loader");
+    loader.innerHTML = `<div style="text-align:center;max-width:420px;padding:0 20px">
+      ⚠ Couldn't load the Python runtime.<br>
+      <span style="color:var(--ink-dim);font-size:13px;font-weight:500">Check your internet connection, then try again. (${String(err).slice(0, 120)})</span><br>
+      <button onclick="location.reload()" style="margin-top:14px;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;
+        background:linear-gradient(92deg,#2dd4bf,#14b8a6);color:#052e2b;font-weight:700;font-size:14px">↻ Reload</button>
+    </div>`;
+    return;
+  }
   pyodide = py;
   testSource = testSrc;
   pyodide.FS.writeFile("bowling.py", bowlingSrc);
